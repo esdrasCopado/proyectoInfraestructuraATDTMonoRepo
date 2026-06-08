@@ -1,0 +1,48 @@
+# Archivos y carpetas generados durante la compilación
+bin/
+obj/
+
+# Archivos de configuración específicos del entorno de desarrollo
+.vs/
+AgendaFront/.vscode/
+.vscode/
+.idea/
+
+# Archivos de configuraci�n de usuario en Visual Studio
+*.suo
+*.user
+*.userosscache
+
+# Archivos de paquetes NuGet (no debes ignorar los archivos de configuraci�n de NuGet)
+# Se eliminan las l�neas que ignoraban el paquete de NuGet
+# *.nupkg
+# .nuget/
+
+# Archivos de base de datos locales que no deben ser versionados
+*.sqlite
+*.mdf
+
+# Archivos temporales del sistema operativo o IDE
+Thumbs.db
+Desktop.ini
+
+AgendaBack/AgendaContactosSGD/Img/Sesiones/*
+!AgendaBack/AgendaContactosSGD/Img/Sesiones.gitkeep
+
+AgendaBack/AgendaContactosSGD/Img/Contactos/*
+!AgendaBack/AgendaContactosSGD/Img/Contactos.gitkeep
+
+AgendaBack/AgendaContactosSGD/Img/Obsequios/*
+!AgendaBack/AgendaContactosSGD/Img/Obsequios.gitkeep
+
+AgendaBack/AgendaContactosSGD/Img/EventosLogo/*
+!AgendaBack/AgendaContactosSGD/Img/EventosLogo.gitkeep
+
+AgendaBack/AgendaContactosSGD/Img/Croquis/*
+!AgendaBack/AgendaContactosSGD/Img/Croquis.gitkeep
+
+AgendaBack/AgendaContactosSGD/variables.env
+Back/variables.env
+
+/.claude
+

@@ -1,0 +1,72 @@
+<div class="reporte-page">
+
+  <div class="reporte-page__header">
+    <div class="reporte-page__titulo">
+      <span class="reporte-page__num">4.1</span>
+      <h1>Estatus de solicitudes</h1>
+    </div>
+    <div class="reporte-page__exports">
+      <button class="btn-export btn-export--excel" (click)="exportar('excel')"><mat-icon>table_view</mat-icon> Excel</button>
+      <button class="btn-export btn-export--pdf" (click)="exportar('pdf')"><mat-icon>picture_as_pdf</mat-icon> PDF</button>
+    </div>
+  </div>
+
+  <div class="reporte-filtros">
+    <mat-form-field appearance="outline">
+      <mat-label>Desde</mat-label>
+      <input matInput type="date" [(ngModel)]="fechaDesde">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Hasta</mat-label>
+      <input matInput type="date" [(ngModel)]="fechaHasta">
+    </mat-form-field>
+    <button class="btn-buscar" (click)="cargar()"><mat-icon>search</mat-icon> Buscar</button>
+    <button class="btn-limpiar" (click)="limpiar()"><mat-icon>clear</mat-icon> Limpiar</button>
+  </div>
+
+  <div class="reporte-tabla-wrap">
+    <table class="reporte-tabla">
+      <thead>
+        <tr>
+          <th>Sector</th>
+          <th>Dependencia</th>
+          <th>Responsable</th>
+          <th>Email Contacto</th>
+          <th>Descripción del servidor</th>
+          <th>IP</th>
+          <th>Fecha de solicitud</th>
+          <th>Estatus</th>
+          <th>Etapa actual</th>
+          <th>Nombre de etapa</th>
+          <th>Fecha proc. etapa</th>
+          <th>Responsable de etapa</th>
+          <th>Fecha de publicación</th>
+          <th>Tipo de despliegue</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of datos; track r.ip) {
+          <tr>
+            <td>{{ r.sector }}</td>
+            <td>{{ r.dependencia }}</td>
+            <td>{{ r.responsable }}</td>
+            <td>{{ r.emailContacto }}</td>
+            <td>{{ r.descripcionServidor }}</td>
+            <td class="td-folio">{{ r.ip }}</td>
+            <td>{{ r.fechaSolicitud }}</td>
+            <td><span class="estatus-badge {{ r.estatusProcesamieto | estatusBadge }}">{{ r.estatusProcesamieto }}</span></td>
+            <td class="td-num">{{ r.etapaActual }}</td>
+            <td>{{ r.nombreEtapaActual }}</td>
+            <td>{{ r.fechaProcesamientoEtapa }}</td>
+            <td>{{ r.rolResponsableEtapa }}</td>
+            <td>{{ r.fechaPublicacion || '—' }}</td>
+            <td>{{ r.tipoDespliegue }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="14" class="td-empty">Sin datos para el rango seleccionado</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+</div>

@@ -1,0 +1,137 @@
+### ============================================================
+### PRUEBA DE NOTIFICACIONES — SRIS
+### Requiere la extensión "REST Client" (humao.rest-client) en VS Code
+### Ejecuta cada bloque en orden con "Send Request"
+### ============================================================
+
+@base = http://localhost:5214
+
+# ── PASO 1: Login como Admin de Centro de Datos (quien enviará la notif) ──────
+# @name loginAdmin
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admincd@local",
+  "password": "AdminCD#2024"
+}
+
+###
+
+# ── PASO 2: Login como Dependencia / Cliente (quien recibirá la notif) ────────
+# Guarda el token y el userId del destinatario
+# @name loginDep
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "dependencia@local",
+  "password": "Dependencia#2024"
+}
+
+###
+
+# ── PASO 3: Crear notificación (como Admin CD → hacia Dependencia) ────────────
+# ANTES de enviar: reemplaza el recipientUserId con el "id" que devolvió el paso 2
+# y el senderUserId con el "id" que devolvió el paso 1.
+@tokenAdmin = {{loginAdmin.response.body.$.token}}
+
+POST {{base}}/api/notifications
+Content-Type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+  "recipientUserId": 3,
+  "senderUserId": 2,
+  "tipo": "evidencias_cargadas",
+  "entityType": "solicitud",
+  "entityId": 1,
+  "titulo": "Nueva evidencia cargada",
+  "mensaje": "La dependencia ha subido las evidencias de funcionamiento para la solicitud SOL-001. Por favor revísalas."
+}
+
+###
+
+# ── PASO 4: Ver TODAS las notificaciones del usuario Dependencia ──────────────
+@tokenDep = {{loginDep.response.body.$.token}}
+
+GET {{base}}/api/notifications
+Authorization: Bearer {{tokenDep}}
+
+###
+
+# ── PASO 5: Ver solo las NO LEÍDAS ───────────────────────────────────────────
+GET {{base}}/api/notifications?leida=false
+Authorization: Bearer {{tokenDep}}
+
+###
+
+# ── PASO 6: Contar notificaciones no leídas (para el badge del frontend) ─────
+GET {{base}}/api/notifications/no-leidas/count
+Authorization: Bearer {{tokenDep}}
+
+###
+
+# ── PASO 7: Marcar la notificación como LEÍDA ─────────────────────────────────
+# Reemplaza {id} con el notificationId que devolvió el paso 4
+PATCH {{base}}/api/notifications/1/leer
+Content-Type: application/json
+Authorization: Bearer {{tokenDep}}
+
+{
+  "leida": true
+}
+
+###
+
+# ── PASO 8: Verificar que el contador bajó a 0 ────────────────────────────────
+GET {{base}}/api/notifications/no-leidas/count
+Authorization: Bearer {{tokenDep}}
+
+###
+
+# ── PASO 9: Ver solo las YA LEÍDAS ───────────────────────────────────────────
+GET {{base}}/api/notifications?leida=true
+Authorization: Bearer {{tokenDep}}
+
+###
+
+# ── PASO 10: Desmarcar como leída (volver a no leída) ────────────────────────
+PATCH {{base}}/api/notifications/1/leer
+Content-Type: application/json
+Authorization: Bearer {{tokenDep}}
+
+{
+  "leida": false
+}
+
+###
+
+# ── EXTRA: Login como Admin General (también puede crear notificaciones) ──────
+# @name loginAdminGen
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admingen@local",
+  "password": "Admin_General#2024"
+}
+
+###
+
+# ── EXTRA: Crear notificación de tipo rechazo ─────────────────────────────────
+@tokenAdminGen = {{loginAdminGen.response.body.$.token}}
+
+POST {{base}}/api/notifications
+Content-Type: application/json
+Authorization: Bearer {{tokenAdminGen}}
+
+{
+  "recipientUserId": 3,
+  "senderUserId": 1,
+  "tipo": "evidencias_rechazadas",
+  "entityType": "solicitud",
+  "entityId": 1,
+  "titulo": "Evidencias rechazadas",
+  "mensaje": "Las evidencias cargadas no cumplen los requisitos. Por favor sube nuevamente los archivos solicitados."
+}

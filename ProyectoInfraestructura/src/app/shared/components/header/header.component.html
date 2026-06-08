@@ -1,0 +1,134 @@
+<header class="header">
+  <div class="header-content">
+
+    <!-- Título de la página actual -->
+    <div class="header-nav">
+      @if (paginaActual) {
+        <span class="nav-pagina">{{ paginaActual }}</span>
+      }
+    </div>
+
+    <!-- Spacer -->
+    <div class="header-spacer"></div>
+
+    <!-- Acciones de la barra -->
+    <div class="header-actions">
+
+      <!-- Notificaciones -->
+      <button class="action-btn" [matMenuTriggerFor]="menuNotif"
+              matTooltip="Notificaciones" aria-label="Notificaciones">
+        <mat-icon
+          [matBadge]="totalNotificaciones > 0 ? totalNotificaciones : null"
+          matBadgeColor="warn"
+          matBadgeSize="small">
+          notifications
+        </mat-icon>
+      </button>
+
+      <mat-menu #menuNotif="matMenu" class="header-notif-menu" xPosition="before">
+
+        <!-- Cabecera del panel -->
+        <div class="notif-panel-header" (click)="$event.stopPropagation()">
+          <span class="notif-panel-titulo">Notificaciones</span>
+          @if (totalNotificaciones > 0) {
+            <span class="notif-panel-badge">{{ totalNotificaciones }} nueva{{ totalNotificaciones > 1 ? 's' : '' }}</span>
+          }
+        </div>
+
+        <!-- Lista de recientes -->
+        @if (notificacionesRecientes.length === 0) {
+          <div class="notif-panel-vacia" (click)="$event.stopPropagation()">
+            <mat-icon>notifications_none</mat-icon>
+            <span>Sin notificaciones</span>
+          </div>
+        } @else {
+          @for (n of notificacionesRecientes; track n.notificationId) {
+            <button mat-menu-item class="notif-panel-item"
+                    [class.notif-panel-item--nueva]="!n.leida"
+                    (click)="onNotifClick(n)">
+              <mat-icon class="notif-panel-icono" [style.color]="metaNotif(n.tipo).color">
+                {{ metaNotif(n.tipo).icono }}
+              </mat-icon>
+              <div class="notif-panel-cuerpo">
+                <span class="notif-panel-item-titulo">{{ n.titulo }}</span>
+                <span class="notif-panel-item-msg">{{ n.mensaje }}</span>
+              </div>
+              @if (!n.leida) {
+                <span class="notif-panel-dot"></span>
+              }
+            </button>
+          }
+        }
+
+        <mat-divider></mat-divider>
+
+        <button mat-menu-item routerLink="/notificaciones" class="notif-panel-ver-todas">
+          <mat-icon>list</mat-icon>
+          <span>Ver todas las notificaciones</span>
+        </button>
+
+      </mat-menu>
+
+      <!-- Mensajes -->
+      <button class="action-btn" routerLink="/mensajes"
+              matTooltip="Mensajes" aria-label="Mensajes">
+        <mat-icon
+          [matBadge]="totalMensajes > 0 ? totalMensajes : null"
+          matBadgeColor="accent"
+          matBadgeSize="small">
+          mail_outline
+        </mat-icon>
+      </button>
+
+    </div>
+
+    <!-- Menú de usuario -->
+    <button class="user-trigger" [matMenuTriggerFor]="menuUsuario" aria-label="Menú de usuario">
+      <span class="user-avatar">{{ iniciales }}</span>
+      <span class="user-info">
+        <span class="user-name">{{ nombreUsuario }}</span>
+        <span class="user-role">{{ etiquetaRol }}</span>
+      </span>
+      <mat-icon class="chevron">expand_more</mat-icon>
+    </button>
+
+    <mat-menu #menuUsuario="matMenu" class="header-user-menu" xPosition="before">
+
+      <button mat-menu-item routerLink="/perfil-usuario">
+        <mat-icon>manage_accounts</mat-icon>
+        <span>Mi perfil</span>
+      </button>
+
+      <button mat-menu-item routerLink="/historial">
+        <mat-icon>history</mat-icon>
+        <span>Historial de actividad</span>
+      </button>
+
+      <button mat-menu-item routerLink="/ayuda">
+        <mat-icon>help_outline</mat-icon>
+        <span>Ayuda / Manual de usuario</span>
+      </button>
+
+      <button mat-menu-item routerLink="/acerca">
+        <mat-icon>info_outline</mat-icon>
+        <span>Acerca del sistema</span>
+      </button>
+
+      <mat-divider [style.display]="esAdminGeneral ? '' : 'none'"></mat-divider>
+      <button mat-menu-item routerLink="/crear-usuario"
+              [style.display]="esAdminGeneral ? '' : 'none'">
+        <mat-icon>person_add</mat-icon>
+        <span>Crear usuario</span>
+      </button>
+
+      <mat-divider></mat-divider>
+
+      <button mat-menu-item class="menu-item-danger" (click)="cerrarSesion()">
+        <mat-icon>logout</mat-icon>
+        <span>Cerrar sesión</span>
+      </button>
+
+    </mat-menu>
+
+  </div>
+</header>

@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:16
+    container_name: solicitud_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "1234"
+      POSTGRES_DB: SolicitudServidoresDB
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./Back
+      dockerfile: Dockerfile
+    container_name: solicitud_api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./Back/variables.env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      DATABASE_PROVIDER: "postgres"
+      POSTGRESQL_CONNECTION: "Host=db;Port=5432;Username=postgres;Password=1234;Database=SolicitudServidoresDB"
+
+  frontend:
+    build:
+      context: ./ProyectoInfraestructura
+      dockerfile: Dockerfile
+    container_name: solicitud_frontend
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+
+  tests:
+    build:
+      context: ./Back
+      dockerfile: Dockerfile
+      target: test          # apunta al stage "test", no al runtime
+    container_name: solicitud_tests
+    profiles:
+      - test                # solo se ejecuta con --profile test
+
+volumes:
+  postgres_data:

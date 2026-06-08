@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Carta Responsiva Múltiple - Solicitud de Servidores</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .form-section { margin: 20px 0; padding: 16px; border: 1px solid #e6e6e6; border-radius:6px; background:#fff; }
+    .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    label{ font-weight:600; display:block; margin-bottom:6px; }
+    .full{ grid-column: 1 / -1; }
+    .actions{ text-align:right; margin-top:12px }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Carta Responsiva Múltiple - Solicitud de Servidores</h1>
+    <p class="small">Formato enfocado a solicitudes que incluyen varios servidores. Añada tantos anexos como necesite.</p>
+
+    <form id="multiForm">
+      <section class="form-section">
+        <h2>Datos generales de la solicitud</h2>
+        <div class="form-grid">
+          <div>
+            <label for="dependencia_g">Dependencia</label>
+            <input id="dependencia_g" name="dependencia_g" type="text">
+          </div>
+          <div>
+            <label for="responsable_g">Responsable</label>
+            <input id="responsable_g" name="responsable_g" type="text">
+          </div>
+          <div>
+            <label for="correo_g">Correo Electrónico</label>
+            <input id="correo_g" name="correo_g" type="email">
+          </div>
+          <div>
+            <label for="telefono_g">Teléfono</label>
+            <input id="telefono_g" name="telefono_g" type="text">
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Anexos - Servidores Adicionales</h2>
+        <div id="serversContainer"></div>
+        <div class="actions">
+          <button type="button" id="addAnexo">Añadir Anexo</button>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Firma y Responsiva</h2>
+        <div class="form-grid">
+          <div>
+            <label for="firmante">Nombre del Firmante</label>
+            <input id="firmante" name="firmante" type="text">
+          </div>
+          <div>
+            <label for="puesto_f">Puesto</label>
+            <input id="puesto_f" name="puesto_f" type="text">
+          </div>
+        </div>
+        <div class="actions">
+          <button type="button" id="submitMulti">Enviar solicitud múltiple</button>
+        </div>
+      </section>
+    </form>
+  </main>
+
+  <script>
+    const container = document.getElementById('serversContainer');
+    document.getElementById('addAnexo').addEventListener('click', ()=>{
+      const i = container.children.length+1;
+      const s = document.createElement('div');
+      s.className='form-section';
+      s.innerHTML = `<h4>Servidor Adicional ${i}</h4>
+        <label>Nombre Propuesto</label>
+        <input name="a_name_${i}" type="text">
+        <label>Descripción de uso</label>
+        <input name="a_desc_${i}" type="text">
+        <label>Sistema Operativo</label>
+        <input name="a_os_${i}" type="text">
+        <label>Cores</label>
+        <input name="a_cores_${i}" type="number" value="2">
+        <label>RAM (GB)</label>
+        <input name="a_ram_${i}" type="number" value="4">
+        <label>Almacenamiento (GB)</label>
+        <input name="a_storage_${i}" type="number" value="50">`;
+      container.appendChild(s);
+    });
+
+    document.getElementById('submitMulti').addEventListener('click', async ()=>{
+      const fd = new FormData(document.getElementById('multiForm'));
+      const serverEntries = [];
+      for(let i=0;i<container.children.length;i++){
+        const idx = i+1;
+        serverEntries.push({
+          hostname: fd.get(`a_name_${idx}`)||`srv-${idx}`,
+          funcion: fd.get(`a_desc_${idx}`)||'Servidor adicional',
+          sistemaOperativo: fd.get(`a_os_${idx}`)||'',
+          nucleos: Number(fd.get(`a_cores_${idx}`)||2),
+          ram: Number(fd.get(`a_ram_${idx}`)||4),
+          almacenamiento: Number(fd.get(`a_storage_${idx}`)||50),
+          estado: 'Pendiente',
+          tipoUso: 'Interno',
+          etapaOperativa: 'Provisionamiento',
+          tareasPendientes: 'Validar solicitud múltiple',
+          requiereRevisionAnual: true,
+          vpns: [],
+          subdominios: [],
+          evidenciasPruebas: []
+        });
+      }
+
+      const data = {
+        titulo: fd.get('dependencia_g') || 'Solicitud Múltiple',
+        arquitectura: 'Híbrida',
+        descripcion: `Solicitud múltiple firmada por ${fd.get('firmante') || 'responsable'}`,
+        servicios: 'Infraestructura múltiple',
+        estado: 'Pendiente',
+        etapaActual: 'Carta responsiva',
+        prioridad: 'Alta',
+        responsableActual: fd.get('responsable_g') || '',
+        comentariosSeguimiento: `Contacto: ${fd.get('correo_g') || ''} / ${fd.get('telefono_g') || ''}`,
+        tareasPendientes: 'Aprobar carta múltiple y continuar aprovisionamiento',
+        servidores: serverEntries
+      };
+
+      try{
+        const resp = await fetch('/api/solicitud',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) });
+        const payload = await resp.json();
+        if(resp.ok){ alert(`Solicitud múltiple enviada con folio ${payload.folio || payload.id}`); window.location.href='/'; } else { alert('Error: '+(payload.message || resp.status)); }
+      }catch(e){ alert('Error: '+e.message); }
+    });
+  </script>
+</body>
+</html>

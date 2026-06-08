@@ -1,0 +1,371 @@
+<div class="step-container">
+
+  <!-- Sección 1: Configuración de red -->
+  <section class="form-section" aria-labelledby="red-heading">
+    <h3 id="red-heading" class="section-title">
+      <span class="section-number">1</span>
+      Configuración de red
+    </h3>
+    <p class="section-desc">Dominio, puerto y opciones de seguridad del servidor</p>
+
+    <div [formGroup]="form" class="fields-grid fields-grid--stack">
+
+      <!-- Subdominios con puerto por entrada -->
+      <div class="field-full" formArrayName="subdominios">
+        @for (ctrl of subdominiosArray.controls; track $index; let i = $index) {
+          <div class="subdominio-row" [formGroupName]="i">
+            <mat-form-field appearance="outline" class="subdominio-field">
+              <mat-label>Subdominio {{ i + 1 }}</mat-label>
+              <input matInput formControlName="subdominio"
+                     autocomplete="off" placeholder="ej. app.dominio.gob.mx">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="puerto-field">
+              <mat-label>Puerto</mat-label>
+              <input matInput formControlName="puerto"
+                     autocomplete="off" placeholder="Ej. 8080">
+            </mat-form-field>
+
+            @if (subdominiosArray.length > 1) {
+              <button mat-icon-button type="button" (click)="eliminarSubdominio(i)"
+                      aria-label="Eliminar subdominio">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            }
+          </div>
+        }
+
+        <button mat-stroked-button type="button" (click)="agregarSubdominio()" class="add-subdominio-btn">
+          <mat-icon>add</mat-icon>
+          Agregar subdominio
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="section-divider" aria-hidden="true">
+
+  <!-- Sección 2: Acceso VPN -->
+  <section class="form-section" aria-labelledby="vpn-heading">
+    <div class="vpn-section-header">
+      <div>
+        <h3 id="vpn-heading" class="section-title">
+          <span class="section-number">2</span>
+          Acceso VPN
+        </h3>
+        <p class="section-desc">Configura los accesos VPN requeridos para el servidor</p>
+      </div>
+    </div>
+
+    <!-- Lista de entradas VPN -->
+    <div [formGroup]="form">
+    <div formArrayName="vpns" class="vpn-list">
+
+      @for (vpn of vpnsArray.controls; track $index; let i = $index) {
+        <div class="vpn-card" [formGroupName]="i">
+
+          <!-- Cabecera de la tarjeta -->
+          <div class="vpn-card-header">
+            <span class="vpn-card-title">VPN #{{ i + 1 }}</span>
+            @if (vpnsArray.length > 1) {
+              <button mat-icon-button type="button" (click)="eliminarVpn(i)"
+                      class="vpn-remove-btn" aria-label="Eliminar VPN">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            }
+          </div>
+
+          <!-- Selector de tipo -->
+          <mat-button-toggle-group formControlName="tipoVpn" class="vpn-tipo-toggle"
+                                   aria-label="Tipo de acceso VPN">
+            <mat-button-toggle value="dependencia">Usuario VPN de la Dependencia</mat-button-toggle>
+            <mat-button-toggle value="actualizacion">Actualización de Usuario VPN</mat-button-toggle>
+            <mat-button-toggle value="proveedor">Usuario VPN para Proveedor</mat-button-toggle>
+          </mat-button-toggle-group>
+
+          <!-- ── Dependencia ── -->
+          @if (tipoVpnAt(i) === 'dependencia') {
+            <div class="fields-grid vpn-fields">
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Responsable</mat-label>
+                  <input matInput formControlName="vpnResponsable" autocomplete="name"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnResponsable') ? 'vpn-resp-err-'+i : null">
+                </mat-form-field>
+                @if (hasErrorAt(i,'vpnResponsable','required')) {
+                  <span [id]="'vpn-resp-err-'+i" class="field-error" role="alert">⚠ Ingresa el nombre del responsable</span>
+                }
+              </div>
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Cargo</mat-label>
+                  <input matInput formControlName="vpnCargo" autocomplete="organization-title"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnCargo') ? 'vpn-cargo-err-'+i : null">
+                </mat-form-field>
+                @if (hasErrorAt(i,'vpnCargo','required')) {
+                  <span [id]="'vpn-cargo-err-'+i" class="field-error" role="alert">⚠ Ingresa el cargo</span>
+                }
+              </div>
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Teléfono de contacto</mat-label>
+                  <input matInput formControlName="vpnTelefono" appPhoneMask type="tel"
+                         placeholder="(333) 333-3333" autocomplete="tel"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnTelefono') ? 'vpn-tel-err-'+i : null">
+                </mat-form-field>
+                <span [id]="'vpn-tel-err-'+i" class="field-error" role="alert">
+                  @if (hasErrorAt(i,'vpnTelefono','required')) { ⚠ Ingresa el teléfono }
+                  @else if (hasErrorAt(i,'vpnTelefono','pattern')) { ⚠ Formato: (XXX) XXX-XXXX }
+                </span>
+              </div>
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Correo electrónico</mat-label>
+                  <input matInput formControlName="vpnCorreo" type="email" autocomplete="email"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnCorreo') ? 'vpn-correo-err-'+i : null">
+                </mat-form-field>
+                <span [id]="'vpn-correo-err-'+i" class="field-error" role="alert">
+                  @if (hasErrorAt(i,'vpnCorreo','required')) { ⚠ Ingresa el correo electrónico }
+                  @else if (hasErrorAt(i,'vpnCorreo','email')) { ⚠ El correo no tiene un formato válido }
+                </span>
+              </div>
+
+            </div>
+          }
+
+          <!-- ── Actualización ── -->
+          @if (tipoVpnAt(i) === 'actualizacion') {
+            <div class="fields-grid vpn-fields">
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Responsable</mat-label>
+                  <input matInput formControlName="vpnResponsable" autocomplete="name"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnResponsable') ? 'act-resp-err-'+i : null">
+                </mat-form-field>
+                @if (hasErrorAt(i,'vpnResponsable','required')) {
+                  <span [id]="'act-resp-err-'+i" class="field-error" role="alert">⚠ Ingresa el nombre del responsable</span>
+                }
+              </div>
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Perfil anterior</mat-label>
+                  <input matInput formControlName="vpnPerfilAnterior" autocomplete="off"
+                         placeholder="Ej. DGIT01 - Juan López">
+                  <mat-hint>Formato: DGIT## - nombre del usuario actual</mat-hint>
+                </mat-form-field>
+              </div>
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Servidores solicitados</mat-label>
+                  <input matInput formControlName="vpnServidores" autocomplete="off"
+                         placeholder="Ej. SRV-APP-01, SRV-BaseDatos-02">
+                </mat-form-field>
+              </div>
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Folio VPN <span class="req-mark">*</span></mat-label>
+                  <input matInput
+                         [formControl]="folioSearchCtrls[i]"
+                         [matAutocomplete]="autoFolioActualizacion"
+                         autocomplete="off"
+                         placeholder="Buscar por folio…"
+                         (focus)="onFolioFocus(i)"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnFolio') ? 'vpn-folio-err-'+i : null">
+                  @if (folioLoading[i]) {
+                    <mat-icon matSuffix class="folio-loading-icon">hourglass_empty</mat-icon>
+                  }
+                  <mat-autocomplete #autoFolioActualizacion="matAutocomplete"
+                                    (optionSelected)="seleccionarFolio(i, $event.option.value)">
+                    @for (vpn of foliosFiltrados[i]; track vpn.folio) {
+                      <mat-option [value]="vpn">
+                        <span class="vpn-option-folio">{{ vpn.folio }}</span>
+                        <span class="vpn-option-tipo"> — {{ vpn.tipo }}</span>
+                      </mat-option>
+                    }
+                  </mat-autocomplete>
+                </mat-form-field>
+                @if (folioError[i]) {
+                  <span class="field-error" role="alert">⚠ Error al consultar VPNs. Intenta de nuevo.</span>
+                }
+                @if (folioSinResultados[i]) {
+                  <div class="vpn-folio-agregar">
+                    <span class="vpn-folio-agregar-msg">Folio no encontrado.</span>
+                    <button mat-button type="button" color="primary" (click)="agregarFolioVpn(i)">
+                      Agregar "{{ folioSearchCtrls[i].value }}"
+                    </button>
+                  </div>
+                }
+                @if (hasErrorAt(i,'vpnFolio','required')) {
+                  <span [id]="'vpn-folio-err-'+i" class="field-error" role="alert">⚠ Ingresa el folio VPN</span>
+                }
+              </div>
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>IP VPN <span class="req-mark">*</span></mat-label>
+                  <input matInput formControlName="vpnIp" autocomplete="off"
+                         placeholder="Ej. 10.0.0.25"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnIp') ? 'vpn-ip-err-'+i : null">
+                </mat-form-field>
+                @if (hasErrorAt(i,'vpnIp','required')) {
+                  <span [id]="'vpn-ip-err-'+i" class="field-error" role="alert">⚠ Ingresa la IP VPN</span>
+                }
+              </div>
+
+            </div>
+          }
+
+          <!-- ── Proveedor ── -->
+          @if (tipoVpnAt(i) === 'proveedor') {
+            <div class="fields-grid vpn-fields">
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Responsable</mat-label>
+                  <input matInput formControlName="vpnResponsable" autocomplete="name"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnResponsable') ? 'prov-resp-err-'+i : null">
+                </mat-form-field>
+                @if (hasErrorAt(i,'vpnResponsable','required')) {
+                  <span [id]="'prov-resp-err-'+i" class="field-error" role="alert">⚠ Ingresa el nombre del responsable</span>
+                }
+              </div>
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Cargo</mat-label>
+                  <input matInput formControlName="vpnCargo" autocomplete="organization-title"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnCargo') ? 'prov-cargo-err-'+i : null">
+                </mat-form-field>
+                @if (hasErrorAt(i,'vpnCargo','required')) {
+                  <span [id]="'prov-cargo-err-'+i" class="field-error" role="alert">⚠ Ingresa el cargo</span>
+                }
+              </div>
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Teléfono de contacto</mat-label>
+                  <input matInput formControlName="vpnTelefono" appPhoneMask type="tel"
+                         placeholder="(333) 333-3333" autocomplete="tel"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnTelefono') ? 'prov-tel-err-'+i : null">
+                </mat-form-field>
+                <span [id]="'prov-tel-err-'+i" class="field-error" role="alert">
+                  @if (hasErrorAt(i,'vpnTelefono','required')) { ⚠ Ingresa el teléfono }
+                  @else if (hasErrorAt(i,'vpnTelefono','pattern')) { ⚠ Formato: (XXX) XXX-XXXX }
+                </span>
+              </div>
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Correo electrónico</mat-label>
+                  <input matInput formControlName="vpnCorreo" type="email" autocomplete="email"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnCorreo') ? 'prov-correo-err-'+i : null">
+                </mat-form-field>
+                <span [id]="'prov-correo-err-'+i" class="field-error" role="alert">
+                  @if (hasErrorAt(i,'vpnCorreo','required')) { ⚠ Ingresa el correo electrónico }
+                  @else if (hasErrorAt(i,'vpnCorreo','email')) { ⚠ El correo no tiene un formato válido }
+                </span>
+              </div>
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Empresa <span class="req-mark">*</span></mat-label>
+                  <input matInput formControlName="vpnEmpresa" autocomplete="organization"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnEmpresa') ? 'prov-empresa-err-'+i : null">
+                </mat-form-field>
+                @if (hasErrorAt(i,'vpnEmpresa','required')) {
+                  <span [id]="'prov-empresa-err-'+i" class="field-error" role="alert">⚠ Ingresa el nombre de la empresa</span>
+                }
+              </div>
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>Folio VPN <span class="req-mark">*</span></mat-label>
+                  <input matInput
+                         [formControl]="folioSearchCtrls[i]"
+                         [matAutocomplete]="autoFolioProveedor"
+                         autocomplete="off"
+                         placeholder="Buscar por folio…"
+                         (focus)="onFolioFocus(i)"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnFolio') ? 'prov-folio-err-'+i : null">
+                  @if (folioLoading[i]) {
+                    <mat-icon matSuffix class="folio-loading-icon">hourglass_empty</mat-icon>
+                  }
+                  <mat-autocomplete #autoFolioProveedor="matAutocomplete"
+                                    (optionSelected)="seleccionarFolio(i, $event.option.value)">
+                    @for (vpn of foliosFiltrados[i]; track vpn.folio) {
+                      <mat-option [value]="vpn">
+                        <span class="vpn-option-folio">{{ vpn.folio }}</span>
+                        <span class="vpn-option-tipo"> — {{ vpn.tipo }}</span>
+                      </mat-option>
+                    }
+                  </mat-autocomplete>
+                </mat-form-field>
+                @if (folioError[i]) {
+                  <span class="field-error" role="alert">⚠ Error al consultar VPNs. Intenta de nuevo.</span>
+                }
+                @if (folioSinResultados[i]) {
+                  <div class="vpn-folio-agregar">
+                    <span class="vpn-folio-agregar-msg">Folio no encontrado.</span>
+                    <button mat-button type="button" color="primary" (click)="agregarFolioVpn(i)">
+                      Agregar "{{ folioSearchCtrls[i].value }}"
+                    </button>
+                  </div>
+                }
+                @if (hasErrorAt(i,'vpnFolio','required')) {
+                  <span [id]="'prov-folio-err-'+i" class="field-error" role="alert">⚠ Ingresa el folio VPN</span>
+                }
+              </div>
+
+              <div class="field-wrap">
+                <mat-form-field appearance="outline">
+                  <mat-label>IP VPN <span class="req-mark">*</span></mat-label>
+                  <input matInput formControlName="vpnIp" autocomplete="off"
+                         placeholder="Ej. 10.0.0.25"
+                         [attr.aria-describedby]="isInvalidAt(i,'vpnIp') ? 'prov-ip-err-'+i : null">
+                </mat-form-field>
+                @if (hasErrorAt(i,'vpnIp','required')) {
+                  <span [id]="'prov-ip-err-'+i" class="field-error" role="alert">⚠ Ingresa la IP VPN</span>
+                }
+              </div>
+
+              <!-- Vigencia -->
+              <div class="field-wrap field-full">
+                <p class="vigencia-label">Vigencia del acceso <span class="req-mark">*</span></p>
+                <mat-radio-group formControlName="vpnVigencia" class="vigencia-group"
+                                 aria-label="Vigencia del acceso VPN">
+                  <mat-radio-button value="30">30 días</mat-radio-button>
+                  <mat-radio-button value="60">60 días</mat-radio-button>
+                  <mat-radio-button value="90">90 días</mat-radio-button>
+                </mat-radio-group>
+                @if (hasErrorAt(i,'vpnVigencia','required')) {
+                  <span class="field-error" role="alert">⚠ Selecciona la vigencia del acceso</span>
+                }
+              </div>
+
+            </div>
+          }
+
+        </div>
+      }
+
+    </div>
+    </div>
+
+    <!-- Botón agregar VPN -->
+    <button mat-stroked-button type="button" (click)="agregarVpn()" class="add-vpn-btn">
+      <mat-icon>add</mat-icon>
+      Agregar otra VPN
+    </button>
+
+  </section>
+
+</div>

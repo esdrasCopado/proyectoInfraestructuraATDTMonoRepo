@@ -1,0 +1,85 @@
+<nav class="sidebar" [class.sidebar--collapsed]="collapsed">
+
+  <!-- Encabezado del sistema -->
+  <div class="sidebar__header">
+    <div class="sidebar__logo">
+      <mat-icon class="sidebar__logo-icon">shield</mat-icon>
+    </div>
+    @if (!collapsed) {
+      <div class="sidebar__brand">
+        <span class="sidebar__brand-name">SRIS</span>
+        <span class="sidebar__brand-sub">Sistema de Registro de Infraestructura</span>
+      </div>
+    }
+  </div>
+
+  <!-- Secciones -->
+  <div class="sidebar__nav">
+    @for (seccion of secciones; track seccion.label) {
+
+      @if (!collapsed) {
+        <span class="sidebar__section-label">{{ seccion.label }}</span>
+      }
+
+      @for (modulo of seccion.modulos; track modulo.label) {
+
+        <!-- Módulo sin submódulos -->
+        @if (!modulo.submodulos || modulo.submodulos.length === 0) {
+          <a class="sidebar__modulo"
+             [routerLink]="modulo.ruta"
+             [class.sidebar__modulo--activo]="isModuloActivo(modulo)"
+             [matTooltip]="collapsed ? modulo.label : ''"
+             matTooltipPosition="right">
+            <mat-icon class="sidebar__modulo-icon">{{ modulo.icono }}</mat-icon>
+            @if (!collapsed) {
+              <span class="sidebar__modulo-label">{{ modulo.label }}</span>
+            }
+          </a>
+        }
+
+        <!-- Módulo con submódulos -->
+        @if (modulo.submodulos && modulo.submodulos.length > 0) {
+          <div class="sidebar__modulo"
+               [class.sidebar__modulo--activo]="isModuloActivo(modulo)"
+               (click)="toggleModulo(modulo.label)"
+               [matTooltip]="collapsed ? modulo.label : ''"
+               matTooltipPosition="right">
+            <mat-icon class="sidebar__modulo-icon">{{ modulo.icono }}</mat-icon>
+            @if (!collapsed) {
+              <span class="sidebar__modulo-label">{{ modulo.label }}</span>
+              <mat-icon class="sidebar__chevron"
+                        [class.sidebar__chevron--open]="expandedModules.has(modulo.label)">
+                expand_more
+              </mat-icon>
+            }
+          </div>
+
+          <!-- Submódulos -->
+          @if (!collapsed && expandedModules.has(modulo.label)) {
+            <div class="sidebar__submodulos">
+              <div class="sidebar__submodulos-line"></div>
+              <div class="sidebar__submodulos-items">
+                @for (sub of modulo.submodulos; track sub.label) {
+                  <a class="sidebar__submodulo"
+                     [routerLink]="sub.ruta"
+                     [class.sidebar__submodulo--activo]="isSubmoduloActivo(sub.ruta)">
+                    {{ sub.label }}
+                  </a>
+                }
+              </div>
+            </div>
+          }
+        }
+
+      }
+    }
+  </div>
+
+  <!-- Botón colapsar -->
+  <button class="sidebar__collapse-btn"
+          (click)="toggleCollapse.emit()"
+          [title]="collapsed ? 'Expandir menú' : 'Colapsar menú'">
+    <mat-icon>{{ collapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+  </button>
+
+</nav>

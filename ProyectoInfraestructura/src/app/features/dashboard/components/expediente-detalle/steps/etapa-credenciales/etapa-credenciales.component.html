@@ -1,0 +1,156 @@
+<!-- ── Bloque 1: Resumen del expediente ────────────────────────────────────── -->
+
+<!-- Identificación -->
+<details class="bloque" open>
+  <summary class="bloque-summary">
+    <span class="bloque-titulo">
+      <span class="bloque-num">1</span>
+      Identificación del expediente
+    </span>
+    <span class="seccion-arrow"></span>
+  </summary>
+  <div class="bloque-body">
+    <table class="ref-tabla">
+      <tr><td class="ref-key">Folio</td>          <td class="ref-val">{{ folio }}</td></tr>
+      <tr><td class="ref-key">Fecha de registro</td><td class="ref-val">{{ fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</td></tr>
+      <tr><td class="ref-key">Dependencia</td>    <td class="ref-val">{{ dependencia }}</td></tr>
+      <tr><td class="ref-key">Servidor</td>       <td class="ref-val">{{ nombreServidor }}</td></tr>
+    </table>
+  </div>
+</details>
+
+<!-- Recursos asignados -->
+<details class="bloque">
+  <summary class="bloque-summary">
+    <span class="bloque-titulo">
+      <span class="bloque-num">2</span>
+      Recursos asignados (Etapa 2)
+    </span>
+    <span class="seccion-arrow"></span>
+  </summary>
+  <div class="bloque-body">
+    <p class="bloque-hint">Recursos finalmente asignados por el Admin CD, no los originalmente solicitados.</p>
+    <table class="ref-tabla">
+      <tr><td class="ref-key">vCPU</td>              <td class="ref-val">{{ vCores }} núcleos</td></tr>
+      <tr><td class="ref-key">Memoria RAM</td>        <td class="ref-val">{{ memoriaRam }} GB</td></tr>
+      <tr><td class="ref-key">Almacenamiento</td>    <td class="ref-val">{{ almacenamiento }} GB</td></tr>
+      <tr><td class="ref-key">Dirección IP</td>      <td class="ref-val">{{ ip }}</td></tr>
+      <tr><td class="ref-key">Sistema operativo</td> <td class="ref-val">{{ so }}</td></tr>
+      <tr><td class="ref-key">Motor de BD</td>       <td class="ref-val">{{ motorBD }}</td></tr>
+      <tr><td class="ref-key">Puertos</td>           <td class="ref-val">{{ puertos }}</td></tr>
+      @if (integraciones !== '—') {
+        <tr><td class="ref-key">Integraciones</td>   <td class="ref-val">{{ integraciones }}</td></tr>
+      }
+    </table>
+  </div>
+</details>
+
+<!-- Verificaciones técnicas -->
+<details class="bloque">
+  <summary class="bloque-summary">
+    <span class="bloque-titulo">
+      <span class="bloque-num">3</span>
+      Verificaciones técnicas (Etapas 4–6)
+    </span>
+    <span class="seccion-arrow"></span>
+  </summary>
+  <div class="bloque-body">
+    <div class="verif-lista">
+      @for (v of verificaciones; track v.rf) {
+        <div class="verif-row">
+          <div class="verif-left">
+            <span class="verif-badge"
+                  [class.verif-badge--ok]="estadoOk(v.etapa)"
+                  [class.verif-badge--pend]="!estadoOk(v.etapa)">
+              {{ estadoOk(v.etapa) ? '✓' : '·' }}
+            </span>
+            <span class="verif-nombre">{{ v.nombre }}</span>
+            <span class="verif-rf">{{ v.rf }}</span>
+          </div>
+          <div class="verif-right">
+            @if (v.etapa?.responsable) {
+              <span class="verif-meta">{{ v.etapa?.responsable }}</span>
+            }
+            @if (v.etapa?.fechaActualizacion) {
+              <span class="verif-meta">{{ v.etapa?.fechaActualizacion | date:'dd/MM/yyyy' }}</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</details>
+
+<!-- Infraestructura de red -->
+<details class="bloque">
+  <summary class="bloque-summary">
+    <span class="bloque-titulo">
+      <span class="bloque-num">4</span>
+      Infraestructura de red (Etapas 7–8)
+    </span>
+    <span class="seccion-arrow"></span>
+  </summary>
+  <div class="bloque-body">
+    <div class="infra-row">
+      <span class="infra-label">VPNs registradas</span>
+      <span class="infra-value">
+        <strong>{{ totalVpns }}</strong>
+        @if (totalVpns > 0) { <span class="infra-detail">({{ vpnsSummary }})</span> }
+      </span>
+    </div>
+    <div class="infra-row">
+      <span class="infra-label">Subdominios registrados</span>
+      <span class="infra-value">
+        <strong>{{ totalSubdominios }}</strong>
+        @if (totalSubdominios > 0) { <span class="infra-detail">{{ subdominiosSummary }}</span> }
+      </span>
+    </div>
+    <div class="infra-row">
+      <span class="infra-label">Certificado SSL</span>
+      <span class="infra-value">{{ requiereSSL ? 'Requerido' : 'No requerido' }}</span>
+    </div>
+  </div>
+</details>
+
+<!-- ── Bloque 2: Descarga del PDF ──────────────────────────────────────────── -->
+
+<div class="bloque bloque-pdf">
+  <div class="pdf-info">
+    <span class="pdf-icon">📄</span>
+    <div>
+      <p class="pdf-title">Carta Responsiva de Aprovisionamiento</p>
+      <p class="pdf-desc">
+        PDF completo con todos los datos del expediente (6 apartados).
+        Es el documento institucional de entrega formal del servidor.
+      </p>
+    </div>
+  </div>
+  <button type="button" class="btn-pdf" (click)="descargarPDF()">
+    Descargar PDF
+  </button>
+</div>
+
+<!-- ── Bloque 3: Confirmación de entrega de credenciales ──────────────────── -->
+
+<div class="bloque bloque-confirm">
+  <p class="confirm-titulo">Registro de entrega de credenciales</p>
+  <p class="confirm-aviso">
+    SRIS no almacena ni transmite credenciales. Usa este acuse únicamente
+    después de haber entregado las credenciales por canal externo seguro.
+  </p>
+  <form [formGroup]="form">
+    <label class="confirm-label"
+           [class.confirm-label--error]="confirmadoInvalido">
+      <input type="checkbox"
+             class="confirm-check"
+             formControlName="entregaConfirmada">
+      <span class="confirm-text">
+        Confirmo que las credenciales de acceso han sido entregadas
+        al solicitante por canal externo seguro.
+      </span>
+    </label>
+    @if (confirmadoInvalido) {
+      <p class="confirm-error">Debes confirmar la entrega antes de avanzar.</p>
+    }
+  </form>
+</div>

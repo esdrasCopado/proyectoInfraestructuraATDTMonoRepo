@@ -1,0 +1,32 @@
+<!-- Datos del servidor -->
+<div class="bloque">
+  <p class="bloque-titulo">Servidor a configurar</p>
+  <p class="bloque-hint">
+    Configura las reglas del WAF en tu consola (Cloudflare, F5, etc.) para el servidor indicado,
+    luego registra el acuse aquí.
+  </p>
+  <table class="ref-tabla">
+    <tr><td class="ref-key">Servidor</td>     <td class="ref-val">{{ nombreServidor }}</td></tr>
+    <tr><td class="ref-key">Dependencia</td>  <td class="ref-val">{{ dependencia }}</td></tr>
+    <tr><td class="ref-key">IP asignada</td>  <td class="ref-val">{{ ip }}</td></tr>
+    <tr><td class="ref-key">Puertos</td>      <td class="ref-val">{{ puertos }}</td></tr>
+    <tr><td class="ref-key">Subdominios</td>  <td class="ref-val">{{ subdominios }}</td></tr>
+    <tr><td class="ref-key">SSL requerido</td><td class="ref-val">{{ requiereSSL ? 'Sí' : 'No' }}</td></tr>
+  </table>
+</div>
+
+<!-- Confirmación -->
+<div class="bloque bloque-confirm">
+  <form [formGroup]="form">
+    <label class="confirm-label"
+           [class.confirm-label--error]="confirmadoInvalido">
+      <input type="checkbox" class="confirm-check" formControlName="confirmado">
+      <span class="confirm-text">
+        Confirmo que la configuración del WAF ha sido establecida para este servidor.
+      </span>
+    </label>
+    @if (confirmadoInvalido) {
+      <p class="confirm-error">Debes confirmar la configuración del WAF antes de avanzar.</p>
+    }
+  </form>
+</div>

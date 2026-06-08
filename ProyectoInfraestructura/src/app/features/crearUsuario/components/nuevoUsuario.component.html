@@ -1,0 +1,179 @@
+<div class="form-container">
+
+  @if (!resultado) {
+
+    <h2>Crear nuevo usuario</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre <span class="req">*</span></label>
+          <input type="text" formControlName="nombre" placeholder="Nombre(s)">
+          @if (campo('nombre')?.invalid && campo('nombre')?.touched) {
+            <span class="field-error">Mínimo 2 caracteres</span>
+          }
+        </div>
+        <div class="form-group">
+          <label>Apellidos <span class="req">*</span></label>
+          <input type="text" formControlName="apellidos" placeholder="Apellido paterno y materno">
+          @if (campo('apellidos')?.invalid && campo('apellidos')?.touched) {
+            <span class="field-error">Mínimo 2 caracteres</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Correo electrónico <span class="req">*</span></label>
+        <input type="email" formControlName="email" placeholder="usuario@dominio.gob.mx">
+        @if (campo('email')?.invalid && campo('email')?.touched) {
+          <span class="field-error">Ingresa un correo electrónico válido</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Rol <span class="req">*</span></label>
+        <select formControlName="roleId">
+          <option [ngValue]="null" disabled>Selecciona un rol</option>
+          @for (r of roles; track r.roleId) {
+            <option [ngValue]="r.roleId">{{ r.nombre }}</option>
+          }
+        </select>
+        @if (campo('roleId')?.invalid && campo('roleId')?.touched) {
+          <span class="field-error">Selecciona un rol</span>
+        }
+      </div>
+
+      @if (mostrarDependencias) {
+        <div class="form-group">
+          <label>Dependencia <span class="req">*</span></label>
+
+          @if (cargandoDeps) {
+            <span class="field-hint">Cargando dependencias…</span>
+          } @else {
+            <select formControlName="dependencyId">
+              <option [ngValue]="null" disabled>Selecciona una dependencia</option>
+              @for (d of dependencias; track d.dependencyId) {
+                <option [ngValue]="d.dependencyId">{{ d.name }}</option>
+              }
+            </select>
+            @if (campo('dependencyId')?.invalid && campo('dependencyId')?.touched) {
+              <span class="field-error">Selecciona una dependencia</span>
+            }
+          }
+
+          @if (!mostrarFormDep && !cargandoDeps) {
+            <button type="button" class="btn-agregar-dep" (click)="mostrarAgregarDep()">
+              <mat-icon>add_circle_outline</mat-icon> ¿No encuentras la dependencia? Agregar
+            </button>
+          }
+
+          @if (mostrarFormDep) {
+            <div class="form-dep">
+              <input type="text"
+                     [(ngModel)]="nombreNuevaDep"
+                     [ngModelOptions]="{standalone: true}"
+                     placeholder="Nombre de la dependencia"
+                     class="form-dep__input"
+                     (keyup.enter)="agregarDependencia()"
+                     autofocus>
+              <div class="form-dep__acciones">
+                <button type="button"
+                        class="form-dep__btn form-dep__btn--guardar"
+                        [disabled]="!nombreNuevaDep.trim() || guardandoDep"
+                        (click)="agregarDependencia()">
+                  @if (guardandoDep) { Guardando… } @else { Guardar }
+                </button>
+                <button type="button"
+                        class="form-dep__btn form-dep__btn--cancelar"
+                        (click)="ocultarFormDep()">
+                  Cancelar
+                </button>
+              </div>
+              @if (errorDep) {
+                <span class="field-error">{{ errorDep }}</span>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Cargo</label>
+          <input type="text" formControlName="cargo" placeholder="Ej. Director de TI">
+        </div>
+        <div class="form-group">
+          <label>Número de empleado</label>
+          <input type="text" formControlName="numeroEmpleado" placeholder="Ej. EMP-001">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Teléfono</label>
+        <input type="tel" formControlName="phone" placeholder="Ej. 662 123 4567">
+      </div>
+
+      @if (errorMsg) {
+        <div class="alerta alerta--error">
+          <mat-icon>error_outline</mat-icon>
+          {{ errorMsg }}
+        </div>
+      }
+
+      <button type="submit" [disabled]="form.invalid || guardando">
+        @if (guardando) { Creando usuario… } @else { Crear usuario }
+      </button>
+
+    </form>
+
+  } @else {
+
+    <div class="resultado">
+
+      <div class="resultado__icono">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+
+      <h2>Usuario creado</h2>
+      <p class="resultado__nombre">{{ resultado.usuario.nombreCompleto }}</p>
+      <p class="resultado__rol">{{ resultado.usuario.rolNombre }}</p>
+      <p class="resultado__email">{{ resultado.usuario.email }}</p>
+
+      <div class="password-box">
+        <p class="password-box__label">Contraseña temporal</p>
+        <div class="password-box__valor">
+          <span class="password-box__texto">{{ resultado.passwordTemporal }}</span>
+          <button type="button" class="btn-copiar" (click)="copiarPassword()" [class.btn-copiar--ok]="copiado">
+            <mat-icon>{{ copiado ? 'check' : 'content_copy' }}</mat-icon>
+          </button>
+        </div>
+        <p class="password-box__nota">El usuario deberá cambiarla en su primer acceso.</p>
+      </div>
+
+      @if (resultado.correoEnviado) {
+        <div class="alerta alerta--success">
+          <mat-icon>mark_email_read</mat-icon>
+          <span>Credenciales enviadas a <strong>{{ resultado.usuario.email }}</strong></span>
+        </div>
+      } @else {
+        <div class="alerta alerta--warning">
+          <mat-icon>warning</mat-icon>
+          <div>
+            <strong>No se pudo enviar el correo.</strong> Comparte la contraseña temporal manualmente.
+            @if (resultado.advertenciaCorreo) {
+              <p class="alerta__detalle">{{ resultado.advertenciaCorreo }}</p>
+            }
+          </div>
+        </div>
+      }
+
+      <button type="button" class="btn-nuevo" (click)="nuevoUsuario()">
+        <mat-icon>person_add</mat-icon> Crear otro usuario
+      </button>
+
+    </div>
+
+  }
+
+</div>

@@ -1,0 +1,69 @@
+<!-- Bloque 1 · Recursos asignados en Etapa 2 (solo lectura) -->
+<details class="bloque" open>
+  <summary class="bloque-summary">
+    <span class="bloque-titulo">
+      <span class="bloque-num">1</span>
+      Recursos asignados al servidor
+    </span>
+    <span class="seccion-arrow"></span>
+  </summary>
+  <div class="bloque-body">
+    <p class="bloque-hint">
+      Solo lectura · Asignados en Etapa 2 · Validación de recursos.
+      Verifica que el servidor creado en el hipervisor coincida con estos valores.
+    </p>
+
+    <table class="ref-tabla">
+      <tr>
+        <td class="ref-key">vCPU asignados</td>
+        <td class="ref-val">{{ vCores || '—' }}</td>
+      </tr>
+      <tr>
+        <td class="ref-key">RAM asignada</td>
+        <td class="ref-val">{{ memoriaRam ? memoriaRam + ' GB' : '—' }}</td>
+      </tr>
+      <tr>
+        <td class="ref-key">Almacenamiento asignado</td>
+        <td class="ref-val">{{ almacenamiento ? almacenamiento + ' GB' : '—' }}</td>
+      </tr>
+      <tr>
+        <td class="ref-key">Dirección IP asignada</td>
+        <td class="ref-val">{{ ip }}</td>
+      </tr>
+      <tr>
+        <td class="ref-key">Sistema operativo</td>
+        <td class="ref-val">{{ soLabel }}</td>
+      </tr>
+    </table>
+  </div>
+</details>
+
+<!-- Bloque 2 · Confirmación de creación -->
+<div class="bloque bloque-confirmacion">
+  <p class="bloque-titulo-plain">
+    <span class="bloque-num">2</span>
+    Confirmación de creación
+  </p>
+  <p class="bloque-hint">
+    Marca la casilla una vez que hayas materializado el servidor virtual en el hipervisor
+    conforme a los recursos indicados arriba.
+  </p>
+
+  <form [formGroup]="form">
+    <label class="confirm-label" [class.confirm-label--error]="confirmadoInvalido">
+      <input
+        type="checkbox"
+        formControlName="confirmado"
+        class="confirm-check"
+      >
+      <span class="confirm-text">
+        Confirmo que el servidor virtual ha sido creado y aprovisionado
+        conforme a los recursos asignados
+      </span>
+    </label>
+
+    @if (confirmadoInvalido) {
+      <p class="confirm-error">Debes confirmar la creación del servidor para avanzar.</p>
+    }
+  </form>
+</div>

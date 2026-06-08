@@ -1,0 +1,271 @@
+:host {
+  display: block;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  flex-shrink: 0;
+  z-index: 200;
+}
+
+// ── Contenedor principal ───────────────────────────────────────────────────
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  height: 100%;
+  background-color: #960E53;
+  transition: width 0.25s ease;
+  overflow: hidden;
+  position: relative;
+
+  // Fondo con imagen difuminada (mismo efecto que el login)
+  &::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    bottom: -10px;
+    right: -10px;
+    background-image: url('/login-bg.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-blend-mode: multiply;
+    background-color: #960E53;
+    filter: blur(5px);
+    z-index: 0;
+  }
+
+  // Máscara de color encima de la imagen
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #960E53;
+    opacity: 0.25;
+    z-index: 1;
+  }
+
+  &--collapsed {
+    width: 72px;
+  }
+}
+
+// ── Encabezado ─────────────────────────────────────────────────────────────
+
+.sidebar__header,
+.sidebar__nav,
+.sidebar__collapse-btn {
+  position: relative;
+  z-index: 2;
+}
+
+.sidebar__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  min-height: 72px;
+  flex-shrink: 0;
+}
+
+.sidebar__logo-icon {
+  color: #fff;
+  font-size: 30px;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.sidebar__brand {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar__brand-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.sidebar__brand-sub {
+  font-family: 'Roboto', sans-serif;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  line-height: 1.3;
+  margin-top: 2px;
+}
+
+// ── Navegación ─────────────────────────────────────────────────────────────
+
+.sidebar__nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px 0;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+  }
+}
+
+// ── Etiqueta de sección ────────────────────────────────────────────────────
+
+.sidebar__section-label {
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 16px 20px 6px;
+  white-space: nowrap;
+}
+
+// ── Módulo ─────────────────────────────────────────────────────────────────
+
+.sidebar__modulo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  margin: 2px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background 0.15s;
+  user-select: none;
+  min-height: 44px;
+
+  &:hover:not(.sidebar__modulo--activo) {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  &--activo {
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #410324 !important;
+
+    .sidebar__modulo-icon {
+      color: #960E53 !important;
+    }
+  }
+}
+
+.sidebar__modulo-icon {
+  color: #fff;
+  flex-shrink: 0;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.sidebar__modulo-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar__chevron {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+  color: rgba(255, 255, 255, 0.7);
+
+  &--open {
+    transform: rotate(180deg);
+  }
+}
+
+// ── Submódulos ─────────────────────────────────────────────────────────────
+
+.sidebar__submodulos {
+  display: flex;
+  padding: 4px 8px 4px 40px;
+  gap: 0;
+}
+
+.sidebar__submodulos-line {
+  width: 2px;
+  min-height: 100%;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 1px;
+  margin-right: 14px;
+  flex-shrink: 0;
+}
+
+.sidebar__submodulos-items {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 2px;
+}
+
+.sidebar__submodulo {
+  display: block;
+  padding: 7px 10px;
+  color: #fff;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &--activo {
+    color: #DC7F37;
+    font-weight: 700;
+  }
+}
+
+// ── Botón colapsar ─────────────────────────────────────────────────────────
+
+.sidebar__collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}

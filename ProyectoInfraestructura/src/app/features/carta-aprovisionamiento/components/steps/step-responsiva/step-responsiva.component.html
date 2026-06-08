@@ -1,0 +1,82 @@
+<div class="step-container">
+
+  <!-- Sección: Datos del firmante -->
+  <section class="form-section" aria-labelledby="firmante-heading">
+    <h3 id="firmante-heading" class="section-title">
+      <span class="section-number">1</span>
+      Datos del firmante
+    </h3>
+    <p class="section-desc">Servidor público que asume la responsabilidad del servidor</p>
+
+    <div [formGroup]="form" class="fields-grid">
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre completo</mat-label>
+          <input matInput formControlName="firmante"
+                 autocomplete="name"
+                 [attr.aria-describedby]="isInvalid('firmante') ? 'firmante-error' : null"
+                 [attr.aria-invalid]="isInvalid('firmante')">
+        </mat-form-field>
+        @if (hasError('firmante', 'required')) {
+          <span id="firmante-error" class="field-error" role="alert">⚠ Ingresa el nombre completo del firmante</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Número de empleado</mat-label>
+          <input matInput formControlName="numEmpleado"
+                 autocomplete="off"
+                 [attr.aria-describedby]="isInvalid('numEmpleado') ? 'num-empleado-error' : null"
+                 [attr.aria-invalid]="isInvalid('numEmpleado')">
+        </mat-form-field>
+        @if (hasError('numEmpleado', 'required')) {
+          <span id="num-empleado-error" class="field-error" role="alert">⚠ Ingresa el número de empleado</span>
+        }
+      </div>
+
+      <div class="field-wrap field-full">
+        <mat-form-field appearance="outline">
+          <mat-label>Puesto</mat-label>
+          <input matInput formControlName="puestoFirmante"
+                 autocomplete="organization-title"
+                 [attr.aria-describedby]="isInvalid('puestoFirmante') ? 'puesto-error' : null"
+                 [attr.aria-invalid]="isInvalid('puestoFirmante')">
+        </mat-form-field>
+        @if (hasError('puestoFirmante', 'required')) {
+          <span id="puesto-error" class="field-error" role="alert">⚠ Ingresa el puesto del firmante</span>
+        }
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="section-divider" aria-hidden="true">
+
+  <!-- Sección: Términos y condiciones -->
+  <section class="form-section" aria-labelledby="terminos-heading">
+    <h3 id="terminos-heading" class="section-title">
+      <span class="section-number">2</span>
+      Términos y condiciones
+    </h3>
+    <p class="section-desc">
+      Al firmar esta carta, el responsable se compromete a utilizar el servidor exclusivamente
+      para los fines descritos, a mantener las credenciales de acceso de forma segura y a
+      notificar cualquier incidente de seguridad a la brevedad posible.
+    </p>
+
+    <div [formGroup]="form" class="terms-area">
+      <mat-checkbox formControlName="aceptaTerminos"
+                    [attr.aria-describedby]="hasError('aceptaTerminos', 'required') ? 'terminos-error' : null">
+        Acepto los términos y condiciones descritos en esta carta de aprovisionamiento
+      </mat-checkbox>
+      @if (hasError('aceptaTerminos', 'required')) {
+        <span id="terminos-error" class="field-error" role="alert">
+          ⚠ Debes aceptar los términos para continuar
+        </span>
+      }
+    </div>
+  </section>
+
+</div>

@@ -1,0 +1,151 @@
+<div class="page-header">
+  <h1 class="page-title">Solicitud de aprovisionamiento de recursos computacionales</h1>
+  <p class="page-subtitle">Complete los siguientes apartados para registrar su solicitud</p>
+  <button mat-stroked-button type="button" class="btn-demo" (click)="llenarDemo()">
+    <mat-icon>auto_fix_high</mat-icon>
+    Rellenar demo
+  </button>
+</div>
+
+<div class="stepper-wrapper">
+  <mat-stepper linear #stepper>
+
+    <ng-template matStepperIcon="edit">
+      <mat-icon>check</mat-icon>
+    </ng-template>
+
+    <!-- Paso 1: Contacto -->
+    <mat-step [stepControl]="stepContacto" label="Contacto">
+      <div class="step-header">
+        <div class="step-header-text">
+          <span class="step-badge">Paso 1 de 6</span>
+          <h2 class="step-title">Datos de contacto y Ente Solicitante</h2>
+          <p class="step-subtitle">Datos del servidor público responsable de la solicitud</p>
+          <p class="step-required-note"><span class="req-asterisk">*</span> Campos obligatorios</p>
+        </div>
+        <app-help-panel [ayuda]="ayudas['contacto']"></app-help-panel>
+      </div>
+      <app-step-contacto [form]="form"></app-step-contacto>
+      <div class="step-actions">
+        <span></span>
+        <button mat-flat-button color="primary" matStepperNext>Siguiente →</button>
+      </div>
+    </mat-step>
+
+    <!-- Paso 2: Descripción -->
+    <mat-step [stepControl]="stepDescripcion" label="Descripción">
+      <div class="step-header">
+        <div class="step-header-text">
+          <span class="step-badge">Paso 2 de 6</span>
+          <h2 class="step-title">Descripción General del Requerimiento</h2>
+          <p class="step-subtitle">Características generales y propósito del servicio solicitado</p>
+          <p class="step-required-note"><span class="req-asterisk">*</span> Campos obligatorios</p>
+        </div>
+        <app-help-panel [ayuda]="ayudas['descripcion']"></app-help-panel>
+      </div>
+      <app-step-descripcion [form]="stepDescripcion"></app-step-descripcion>
+      <div class="step-actions">
+        <button mat-button matStepperPrevious class="btn-back">← Atrás</button>
+        <button mat-flat-button color="primary" matStepperNext>Siguiente →</button>
+      </div>
+    </mat-step>
+
+    <!-- Paso 3: Especificaciones técnicas -->
+    <mat-step [stepControl]="stepSpecs" label="Especificaciones">
+      <div class="step-header">
+        <div class="step-header-text">
+          <span class="step-badge">Paso 3 de 6</span>
+          <h2 class="step-title">Especificaciones técnicas</h2>
+          <p class="step-subtitle">Recursos de cómputo, sistema operativo y configuración del servidor</p>
+          <p class="step-required-note"><span class="req-asterisk">*</span> Campos obligatorios</p>
+        </div>
+        <app-help-panel [ayuda]="ayudas['specs']"></app-help-panel>
+      </div>
+      <app-step-specs [form]="stepSpecs"></app-step-specs>
+      <div class="step-actions">
+        <button mat-button matStepperPrevious class="btn-back">← Atrás</button>
+        <button mat-flat-button color="primary" matStepperNext>Siguiente →</button>
+      </div>
+    </mat-step>
+
+    <!-- Paso 4: Infraestructura -->
+    <mat-step [stepControl]="stepInfra" label="Infraestructura">
+      <div class="step-header">
+        <div class="step-header-text">
+          <span class="step-badge">Paso 4 de 6</span>
+          <h2 class="step-title">Infraestructura y red</h2>
+          <p class="step-subtitle">Subdominio, VPN y conectividad requerida</p>
+          <p class="step-required-note"><span class="req-asterisk">*</span> Campos obligatorios</p>
+        </div>
+        <app-help-panel [ayuda]="ayudas['infraestructura']"></app-help-panel>
+      </div>
+      <app-step-infraestructura [form]="stepInfra"></app-step-infraestructura>
+      <div class="step-actions">
+        <button mat-button matStepperPrevious class="btn-back">← Atrás</button>
+        <button mat-flat-button color="primary" matStepperNext>Siguiente →</button>
+      </div>
+    </mat-step>
+
+    <!-- Paso 5: Responsiva -->
+    <mat-step [stepControl]="stepResponsiva" label="Responsiva">
+      <div class="step-header">
+        <div class="step-header-text">
+          <span class="step-badge">Paso 5 de 6</span>
+          <h2 class="step-title">Responsabilidades</h2>
+          <p class="step-subtitle">Confirmación de responsabilidad y firma del solicitante</p>
+          <p class="step-required-note"><span class="req-asterisk">*</span> Campos obligatorios</p>
+        </div>
+        <app-help-panel [ayuda]="ayudas['responsiva']"></app-help-panel>
+      </div>
+      <app-step-responsiva [form]="stepResponsiva"></app-step-responsiva>
+      <div class="step-actions">
+        <button mat-button matStepperPrevious class="btn-back">← Atrás</button>
+        <button mat-flat-button color="primary" matStepperNext>Siguiente →</button>
+      </div>
+    </mat-step>
+
+    <!-- Paso 6: Confirmación -->
+    <mat-step label="Confirmación">
+
+      @if (folio) {
+        <!-- ── Estado: éxito ── -->
+        <div class="submit-result submit-result--success">
+          <mat-icon class="result-icon">check_circle</mat-icon>
+          <h2 class="result-title">¡Solicitud enviada correctamente!</h2>
+          <p class="result-desc">Tu solicitud ha sido registrada. Guarda el siguiente folio para darle seguimiento.</p>
+          <div class="result-folio">
+            <span class="folio-label">Número de folio</span>
+            <strong class="folio-value">{{ folio }}</strong>
+          </div>
+          <p class="result-note">Recibirás una notificación en el correo registrado cuando tu solicitud sea procesada.</p>
+        </div>
+      } @else {
+        <!-- ── Estado: revisión ── -->
+        <div class="step-header">
+          <span class="step-badge">Paso 6 de 6</span>
+          <h2 class="step-title">Revisar y enviar</h2>
+          <p class="step-subtitle">Resumen de la solicitud antes de enviar</p>
+        </div>
+        <app-confirmar-solicitud [form]="form"></app-confirmar-solicitud>
+
+        @if (errorEnvio) {
+          <div class="submit-result submit-result--error" role="alert">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ errorEnvio }}</span>
+          </div>
+        }
+
+        <div class="step-actions">
+          <button mat-button matStepperPrevious class="btn-back">← Atrás</button>
+          <button mat-flat-button color="primary"
+                  [disabled]="form.invalid || enviando"
+                  (click)="onSubmit()">
+            {{ enviando ? 'Enviando...' : 'Enviar solicitud' }}
+          </button>
+        </div>
+      }
+
+    </mat-step>
+
+  </mat-stepper>
+</div>

@@ -1,0 +1,62 @@
+<div class="notif-page">
+
+  <div class="notif-header">
+    <h1 class="notif-title">Notificaciones</h1>
+    @if (totalNoLeidas > 0) {
+      <button mat-stroked-button class="btn-marcar-todas" (click)="marcarTodasLeidas()">
+        <mat-icon>done_all</mat-icon>
+        Marcar todas como leídas
+      </button>
+    }
+  </div>
+
+  <!-- Pestañas de filtro -->
+  <div class="filtros-tabs">
+    <button class="tab-btn" [class.active]="filtro === 'todas'" (click)="setFiltro('todas')">
+      Todas ({{ notificaciones.length }})
+    </button>
+    <button class="tab-btn" [class.active]="filtro === 'no-leidas'" (click)="setFiltro('no-leidas')">
+      No leídas ({{ totalNoLeidas }})
+    </button>
+  </div>
+
+  <!-- Cargando -->
+  @if (cargando) {
+    <div class="notif-loading">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  }
+
+  <!-- Lista -->
+  @if (!cargando) {
+    @if (listado.length === 0) {
+      <div class="notif-vacia">
+        <mat-icon>notifications_none</mat-icon>
+        <p>No hay notificaciones</p>
+      </div>
+    } @else {
+      <ul class="notif-lista">
+        @for (n of listado; track n.notificationId) {
+          <li class="notif-item" [class.no-leida]="!n.leida" (click)="onNotifClick(n)">
+
+            <span class="notif-icono" [style.color]="meta(n.tipo).color">
+              <mat-icon>{{ meta(n.tipo).icono }}</mat-icon>
+            </span>
+
+            <div class="notif-cuerpo">
+              <span class="notif-tipo">{{ meta(n.tipo).etiqueta }}</span>
+              <span class="notif-mensaje">{{ n.mensaje }}</span>
+              <span class="notif-fecha">{{ n.createdAt | date:'dd/MM/yyyy, HH:mm' }}</span>
+            </div>
+
+            @if (!n.leida) {
+              <span class="notif-dot" aria-label="No leída"></span>
+            }
+
+          </li>
+        }
+      </ul>
+    }
+  }
+
+</div>

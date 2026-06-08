@@ -1,0 +1,251 @@
+.login {
+  height: 100vh;
+  position: relative;
+  display: flex;
+  font-family: "Montserrat", sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-color: #960e53;
+}
+h3{
+  color:#ffffff;
+}
+
+.login .background {
+  background-image: url("/login-bg.jpg");
+  background-repeat: no-repeat;
+  box-sizing: border-box;
+  z-index: 1;
+  background-position: center center;
+  transition: all 300ms ease-in-out;
+  background-blend-mode: multiply;
+  background-color: #960e53;
+  background-attachment: scroll;
+  filter: blur(5px);
+}
+
+.login .background .mask {
+  z-index: 3;
+  background-color: #960e53;
+  opacity: 0.25;
+}
+
+.pattern {
+  z-index: 2;
+  background-image: url("/pattern-white.svg");
+  background-size: auto 160px;
+  background-position: bottom -80px center;
+  background-repeat: no-repeat;
+  opacity: 0.25;
+}
+
+.mask,
+.background,
+.pattern {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  bottom: -10px;
+  right: -10px;
+  height: calc(100vh + 20px);
+  width: calc(100vw + 20px);
+}
+
+.info {
+  z-index: 4;
+  padding: 12vh 0;
+  height: 100%;
+  max-width: 60%;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.info .logos {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 10%;
+  height: 10%;
+}
+
+.info .logos img {
+  height: 100%;
+}
+
+.info h3 {
+  font-size: clamp(1.2rem, 1.34vw, 2rem);
+  font-weight: bold;
+  text-align: center;
+  line-height: 2.5em;
+  margin: 0 10%;
+}
+
+.info h5 {
+  font-size: clamp(1rem, 1vw, 1.6rem);
+  text-align: center;
+  line-height: 2em;
+  font-weight: normal;
+  margin: 0 10% 0;
+}
+
+.info h6 {
+  font-size: clamp(0.8rem, 0.837vw, 1.1rem);
+  text-align: justify;
+  line-height: 2em;
+  font-weight: normal;
+  margin: auto 10%;
+}
+
+.info p {
+  width: 50%;
+  font-size: clamp(0.8rem, 0.837vw, 1.1rem);
+  text-align: left;
+  font-weight: 500;
+  margin: auto auto 0;
+  border-left: 1px solid white;
+  padding-left: 12px;
+}
+
+.form {
+  padding: 12vh 0;
+  height: 100%;
+  z-index: 4;
+  width: 40%;
+  color: white;
+  box-sizing: border-box;
+}
+
+.container {
+  padding: 0;
+  height: 100%;
+  border-left: #ffffff 1px solid;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.form img {
+  width: 14%;
+  margin: 6% auto 4%;
+}
+
+.form h3 {
+  font-size: clamp(1.2rem, 1.34vw, 2rem);
+  font-weight: bold;
+  text-align: center;
+  line-height: 2.5rem;
+}
+
+.form form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.contenedor {
+  display: flex;
+  flex-direction: column;
+  margin: 5% 0 auto;
+}
+
+.input-group {
+  position: relative;
+  width: 80%;
+  margin: 4% auto;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s !important;
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+  box-shadow: 0 0 0px 1000px transparent inset !important;
+  background-color: transparent !important;
+  -webkit-text-fill-color: white !important;
+  color: white !important;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 1.4rem;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  background: transparent;
+  color: white;
+  outline: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.input-group input:hover {
+  color: #ffffff;
+  border-bottom: 1px solid #ffffff;
+}
+
+.input-group input:hover + label {
+  color: #ffffff;
+}
+
+.input-group label {
+  width: 100%;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.input-group input:focus + label,
+.input-group input:valid + label {
+  top: -10px;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.link {
+  text-align: right;
+  margin-right: 10%;
+  cursor: pointer;
+}
+
+.link a {
+  font-size: clamp(0.8rem, 0.837vw, 1.1rem);
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+}
+
+.link a:hover {
+  color: #ffffff;
+}
+
+.form button {
+  width: 13.28vw;
+  min-width: 200px;
+  height: 3rem;
+  background-color: white;
+  font-size: clamp(1.2rem, 1.34vw, 1.4rem);
+  font-weight: 600;
+  color: #410324;
+  border: none;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin: auto auto;
+}
+
+.form button:hover {
+  background-color: #dc7f37;
+  color: white;
+}

@@ -1,0 +1,55 @@
+<div class="perfil-container">
+
+  @if (cargando) {
+    <div class="estado-msg">Cargando perfil...</div>
+  }
+
+  @if (error) {
+    <div class="estado-msg estado-msg--error">{{ error }}</div>
+  }
+
+  @if (perfil) {
+    <div class="perfil-card">
+
+      <div class="perfil-header">
+        <div class="avatar">{{ perfil.nombreCompleto.charAt(0).toUpperCase() }}</div>
+        <div>
+          <h2 class="perfil-nombre">{{ perfil.nombreCompleto }}</h2>
+          <span class="perfil-rol">{{ perfil.rol }}</span>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="perfil-info">
+
+        <div class="info-grupo">
+          <span class="info-label">Correo electrónico</span>
+          <span class="info-valor">{{ perfil.correo }}</span>
+        </div>
+
+        <div class="info-grupo">
+          <span class="info-label">Puesto</span>
+          <span class="info-valor">{{ perfil.puesto }}</span>
+        </div>
+
+        <div class="info-grupo">
+          <span class="info-label">Número de puesto</span>
+          <span class="info-valor">{{ perfil.numeroPuesto }}</span>
+        </div>
+
+        <div class="info-grupo">
+          <span class="info-label">Celular</span>
+          <span class="info-valor">{{ perfil.celular }}</span>
+        </div>
+
+        <div class="info-grupo">
+          <span class="info-label">Permisos</span>
+          <span class="info-valor">{{ perfil.permisos }}</span>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>

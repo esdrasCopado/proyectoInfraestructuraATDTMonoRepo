@@ -1,0 +1,126 @@
+<!-- Contexto -->
+<div class="bloque bloque-contexto">
+  <div class="contexto-info">
+    <p class="bloque-titulo">{{ nombreServidor }}</p>
+    <p class="bloque-hint">{{ dependencia }}</p>
+  </div>
+  @if (iteracion > 1) {
+    <span class="iteracion-badge">Revisión {{ iteracion }}</span>
+  }
+</div>
+
+<!-- Lista de evidencias -->
+<div class="bloque">
+  <p class="bloque-titulo">Evidencias cargadas por la dependencia</p>
+  <p class="bloque-subtitulo">{{ evidencias.length }} archivo{{ evidencias.length !== 1 ? 's' : '' }}</p>
+
+  @if (evidencias.length === 0) {
+    <p class="sin-evidencias">Sin evidencias registradas para esta solicitud.</p>
+  } @else {
+    <ul class="archivos-lista">
+      @for (f of evidencias; track f.id) {
+        <li class="archivo-item" [class.archivo-item--aprobado]="getEstado(f) === 'aprobada'"
+                                 [class.archivo-item--rechazado]="getEstado(f) === 'rechazada'">
+
+          <!-- Fila principal: nombre + acciones -->
+          <div class="archivo-fila-principal">
+            <span class="archivo-nombre">{{ getDisplayName(f.archivoNombre) }}</span>
+
+            <div class="archivo-acciones">
+              @if (getEstado(f) === 'pendiente' && rechazandoId !== f.id) {
+                <button class="btn-validar btn-validar--aprobar"
+                        [disabled]="validando.has(f.id)"
+                        (click)="aprobarArchivo(f)"
+                        title="Aprobar evidencia">
+                  <span class="material-icons">check</span>
+                </button>
+                <button class="btn-validar btn-validar--rechazar"
+                        [disabled]="validando.has(f.id)"
+                        (click)="iniciarRechazoArchivo(f.id)"
+                        title="Rechazar evidencia">
+                  <span class="material-icons">close</span>
+                </button>
+              }
+              <button class="btn-descargar"
+                      [disabled]="viendo.has(f.id)"
+                      (click)="verPdf(f)"
+                      title="Ver PDF">
+                <span class="material-icons">
+                  {{ viendo.has(f.id) ? 'hourglass_empty' : 'visibility' }}
+                </span>
+              </button>
+              <button class="btn-descargar"
+                      [class.btn-descargar--cargando]="descargando.has(f.id)"
+                      [disabled]="descargando.has(f.id)"
+                      (click)="descargar(f)"
+                      title="Descargar archivo">
+                <span class="material-icons">
+                  {{ descargando.has(f.id) ? 'hourglass_empty' : 'download' }}
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Formulario de rechazo inline -->
+          @if (rechazandoId === f.id) {
+            <div class="rechazo-inline">
+              <textarea class="rechazo-inline-input"
+                        [value]="getMotivo(f.id)"
+                        (input)="setMotivo(f.id, $any($event.target).value)"
+                        rows="2"
+                        placeholder="Motivo del rechazo (mín. 10 caracteres)">
+              </textarea>
+              <div class="rechazo-inline-acciones">
+                <button class="btn-confirmar-rechazo"
+                        [disabled]="getMotivo(f.id).trim().length < 10 || validando.has(f.id)"
+                        (click)="rechazarArchivo(f)">
+                  {{ validando.has(f.id) ? 'Enviando...' : 'Confirmar rechazo' }}
+                </button>
+                <button class="btn-cancelar-rechazo-inline" (click)="cancelarRechazoArchivo()">
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          }
+
+          <!-- Metadatos -->
+          <div class="archivo-meta">
+            <span>{{ f.subidoPor.nombreCompleto }}</span>
+            <span class="meta-sep">·</span>
+            <span>{{ f.uploadedAt | date:'dd/MM/yy HH:mm' }}</span>
+            <span class="meta-sep">·</span>
+            <span>{{ formatSize(f.archivoSizeKb) }}</span>
+            <span class="archivo-estado archivo-estado--{{ getEstado(f) }}">{{ getEstado(f) }}</span>
+          </div>
+
+        </li>
+      }
+    </ul>
+  }
+</div>
+
+<!-- Formulario de rechazo global (activado desde el panel derecho) -->
+@if (modoRechazo) {
+  <div class="bloque bloque-rechazo">
+    <p class="rechazo-titulo">Motivo de rechazo</p>
+    <p class="rechazo-desc">
+      Describe qué debe corregir o completar la dependencia en las evidencias.
+    </p>
+    <form [formGroup]="formRechazo">
+      <textarea class="rechazo-input"
+                [class.rechazo-input--error]="formRechazo.get('comentario')?.invalid && formRechazo.get('comentario')?.touched"
+                formControlName="comentario"
+                rows="3"
+                placeholder="Ej: Las capturas no muestran el módulo de pagos operando. Se requieren evidencias del flujo completo de transacción.">
+      </textarea>
+      @if (formRechazo.get('comentario')?.errors?.['required'] && formRechazo.get('comentario')?.touched) {
+        <p class="rechazo-error">El motivo es requerido.</p>
+      } @else if (formRechazo.get('comentario')?.errors?.['minlength'] && formRechazo.get('comentario')?.touched) {
+        <p class="rechazo-error">Describe el motivo con más detalle (mín. 10 caracteres).</p>
+      }
+    </form>
+    <button type="button" class="btn-cancelar-rechazo" (click)="cancelarRechazo()">
+      Cancelar
+    </button>
+  </div>
+}

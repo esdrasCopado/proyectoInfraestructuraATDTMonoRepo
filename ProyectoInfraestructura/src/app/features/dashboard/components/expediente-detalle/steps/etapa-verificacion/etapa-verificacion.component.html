@@ -1,0 +1,79 @@
+<!-- Bloque 1 · Datos de referencia (solo lectura) -->
+<details class="bloque" open>
+  <summary class="bloque-summary">
+    <span class="bloque-titulo">
+      <span class="bloque-num">1</span>
+      {{ tituloBloque1 }}
+    </span>
+    <span class="seccion-arrow"></span>
+  </summary>
+  <div class="bloque-body">
+    <p class="bloque-hint">{{ hintBloque1 }}</p>
+
+    <table class="ref-tabla">
+      @if (etapa === 4) {
+        <tr>
+          <td class="ref-key">Dirección IP asignada</td>
+          <td class="ref-val">{{ ip }}</td>
+        </tr>
+        <tr>
+          <td class="ref-key">Puertos / Reglas de firewall</td>
+          <td class="ref-val">{{ puertos }}</td>
+        </tr>
+        <tr>
+          <td class="ref-key">Motor de BD</td>
+          <td class="ref-val">{{ motorBD }}</td>
+        </tr>
+        <tr>
+          <td class="ref-key">Integraciones externas</td>
+          <td class="ref-val">{{ integraciones }}</td>
+        </tr>
+      } @else if (etapa === 5) {
+        <tr>
+          <td class="ref-key">Sistema operativo</td>
+          <td class="ref-val">{{ sistemaOperativo }}</td>
+        </tr>
+        <tr>
+          <td class="ref-key">Fecha de creación del servidor</td>
+          <td class="ref-val">{{ fechaCreacionServidor !== '—' ? (fechaCreacionServidor | date:'dd/MM/yyyy') : '—' }}</td>
+        </tr>
+      } @else {
+        <tr>
+          <td class="ref-key">Sistema operativo</td>
+          <td class="ref-val">{{ sistemaOperativo }}</td>
+        </tr>
+        <tr>
+          <td class="ref-key">Nombre del servidor</td>
+          <td class="ref-val">{{ nombreServidor }}</td>
+        </tr>
+        <tr>
+          <td class="ref-key">Dirección IP</td>
+          <td class="ref-val">{{ ip }}</td>
+        </tr>
+      }
+    </table>
+  </div>
+</details>
+
+<!-- Bloque 2 · Confirmación de verificación -->
+<div class="bloque bloque-confirmacion">
+  <p class="bloque-titulo-plain">
+    <span class="bloque-num">2</span>
+    Confirmación de verificación
+  </p>
+  <p class="bloque-hint">
+    Marca la casilla una vez que hayas completado la verificación.
+    Se registrará tu usuario y la fecha como acuse (RF05 / HU-05 CA-02).
+  </p>
+
+  <form [formGroup]="form">
+    <label class="confirm-label" [class.confirm-label--error]="confirmadoInvalido">
+      <input type="checkbox" formControlName="confirmado" class="confirm-check">
+      <span class="confirm-text">{{ checkboxText }}</span>
+    </label>
+
+    @if (confirmadoInvalido) {
+      <p class="confirm-error">Debes confirmar la verificación para avanzar.</p>
+    }
+  </form>
+</div>

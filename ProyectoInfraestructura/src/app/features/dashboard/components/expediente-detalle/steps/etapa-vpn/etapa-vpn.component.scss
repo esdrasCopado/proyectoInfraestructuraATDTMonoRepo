@@ -1,0 +1,350 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// ── Bloque servidor (referencia) ─────────────────────────────────────────────
+
+.bloque {
+  background: #fff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
+}
+
+.bloque-summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &::-webkit-details-marker { display: none; }
+
+  .seccion-arrow::before { content: '▶'; font-size: 11px; color: #9ca3af; }
+}
+
+details.bloque[open] .seccion-arrow::before { content: '▼'; }
+
+.bloque-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.bloque-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f4f4f4;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.bloque-hint {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 6px 0 12px;
+  line-height: 1.5;
+}
+
+.bloque-body { padding: 8px 0 4px; }
+
+.ref-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  .ref-key { color: #6b7280; padding: 5px 0; width: 50%; vertical-align: top; }
+  .ref-val { text-align: right; padding: 5px 0; color: #374151; font-weight: 500; }
+}
+
+.ref-subdominio {
+  display: block;
+  line-height: 1.6;
+}
+
+// ── Sección VPNs ──────────────────────────────────────────────────────────────
+
+.bloque-vpns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vpns-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2px;
+}
+
+.vpns-progreso {
+  font-size: 12px;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+
+  &--ok {
+    color: #15803d;
+    background: #dcfce7;
+  }
+}
+
+.vpns-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+// ── Tarjeta VPN ───────────────────────────────────────────────────────────────
+
+.vpn-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+
+  &--ok {
+    border-color: #86efac;
+    background: #f0fdf4;
+  }
+}
+
+.vpn-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 0.5px solid #f3f4f6;
+  background: #fafafa;
+
+  .vpn-card--ok & {
+    background: #f0fdf4;
+    border-bottom-color: #bbf7d0;
+  }
+}
+
+.vpn-card__header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vpn-card__num {
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+
+  &--ok {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  &--pendiente {
+    background: #fef9c3;
+    color: #854d0e;
+  }
+}
+
+.btn-editar {
+  font-size: 12px;
+  color: #2563eb;
+  background: none;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 3px 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.12s;
+
+  &:hover { background: #eff6ff; }
+}
+
+// ── Cuerpo de la tarjeta ──────────────────────────────────────────────────────
+
+.vpn-card__body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 12px 0;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.vpn-col {
+  padding: 0 14px;
+
+  &--carta {
+    border-right: 0.5px solid #f3f4f6;
+
+    .vpn-card--ok & { border-right-color: #bbf7d0; }
+  }
+}
+
+.vpn-col__titulo {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 8px;
+}
+
+.dato-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 3px 0;
+  font-size: 12.5px;
+}
+
+.dato-k { color: #6b7280; flex-shrink: 0; }
+
+.dato-v {
+  color: #374151;
+  font-weight: 500;
+  text-align: right;
+
+  &--asignado { color: #15803d; }
+}
+
+.sin-carta {
+  font-size: 12px;
+  color: #9ca3af;
+  font-style: italic;
+  margin: 8px 0 0;
+}
+
+// ── Campos de captura ─────────────────────────────────────────────────────────
+
+.campo-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.campo-label {
+  font-size: 12px;
+  color: #374151;
+  font-weight: 500;
+
+  &--error { color: #dc2626; }
+}
+
+.campo-req { color: #dc2626; margin-left: 2px; }
+.campo-opt { color: #9ca3af; font-weight: 400; font-size: 11px; }
+
+.campo-input {
+  height: 34px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 13px;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.12s;
+  background: #fff;
+
+  &:focus { border-color: #2563eb; }
+
+  &--error { border-color: #ef4444; background: #fef2f2; }
+}
+
+.campo-error {
+  font-size: 11px;
+  color: #dc2626;
+}
+
+// ── Pie: confirmación ─────────────────────────────────────────────────────────
+
+.vpn-card__footer {
+  padding: 10px 14px 12px;
+  border-top: 0.5px solid #f3f4f6;
+  background: #fafafa;
+}
+
+.confirm-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:has(.confirm-check:checked) {
+    border-color: #16a34a;
+    background: #f0fdf4;
+  }
+
+  &--error {
+    border-color: #ef4444;
+    background: #fef2f2;
+  }
+}
+
+.confirm-check {
+  margin-top: 2px;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  accent-color: #16a34a;
+  cursor: pointer;
+}
+
+.confirm-text {
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.confirm-error {
+  font-size: 12px;
+  color: #dc2626;
+  margin: 6px 0 0 2px;
+}
+
+// ── Botón añadir ──────────────────────────────────────────────────────────────
+
+.btn-agregar {
+  align-self: flex-start;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px dashed #bfdbfe;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+
+  &:hover {
+    background: #dbeafe;
+    border-color: #93c5fd;
+  }
+}

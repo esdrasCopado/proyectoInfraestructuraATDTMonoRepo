@@ -1,0 +1,151 @@
+<div class="dashboard-container">
+
+  <!-- Métricas -->
+  <div class="metricas-grid">
+    <div class="metrica-card">
+      <span class="metrica-label">Total solicitudes</span>
+      <span class="metrica-valor">{{ metricas.total }}</span>
+    </div>
+    <div class="metrica-card info">
+      <span class="metrica-label">En progreso</span>
+      <span class="metrica-valor">{{ metricas.enProgreso }}</span>
+    </div>
+    <div class="metrica-card warning">
+      <span class="metrica-label">Pendientes de respuesta</span>
+      <span class="metrica-valor">{{ metricas.pendientes }}</span>
+    </div>
+    <div class="metrica-card success">
+      <span class="metrica-label">Completadas</span>
+      <span class="metrica-valor">{{ metricas.completadas }}</span>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros">
+    <mat-form-field appearance="outline" class="filtro-busqueda">
+      <mat-label>Buscar por folio o dependencia</mat-label>
+      <input matInput [formControl]="busquedaCtrl">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Estado</mat-label>
+      <mat-select [formControl]="estadoCtrl">
+        <mat-option value="">Todos</mat-option>
+        <mat-option value="pendiente">Pendiente</mat-option>
+        <mat-option value="recursos_asignados">Recursos asignados</mat-option>
+        <mat-option value="aprovisionado">Aprovisionado</mat-option>
+        <mat-option value="en_configuracion">En configuración</mat-option>
+        <mat-option value="credenciales_entregadas">Credenciales entregadas</mat-option>
+        <mat-option value="en_pruebas">En pruebas</mat-option>
+        <mat-option value="en_validacion_evidencias">Validación de evidencias</mat-option>
+        <mat-option value="en_analisis_vulnerabilidades">Análisis de vulnerabilidades</mat-option>
+        <mat-option value="publicado">Publicado</mat-option>
+        <mat-option value="finalizado">Finalizado</mat-option>
+        <mat-option value="rechazado">Rechazado</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Etapa</mat-label>
+      <mat-select [formControl]="etapaCtrl">
+        <mat-option value="">Todas</mat-option>
+        @for (etapa of etapasNombres; track $index) {
+          <mat-option [value]="$index + 1">{{ etapa }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Estado de carga / error -->
+  @if (cargando) {
+    <div class="estado-carga">
+      <mat-spinner diameter="36"></mat-spinner>
+      <span>Cargando solicitudes...</span>
+    </div>
+  } @else if (error) {
+    <div class="estado-error">
+      No se pudo cargar el dashboard. Intenta de nuevo.
+      <button mat-button (click)="cargarDashboard()">Reintentar</button>
+    </div>
+  } @else {
+
+    <!-- Leyenda -->
+    <div class="leyenda">
+      <span class="leyenda-item"><span class="dot dot-done"></span>Completada</span>
+      <span class="leyenda-item"><span class="dot dot-active"></span>En curso</span>
+      <span class="leyenda-item"><span class="dot dot-waiting"></span>Pend. respuesta</span>
+      <span class="leyenda-item"><span class="dot dot-pending"></span>Sin iniciar</span>
+    </div>
+
+    <!-- Tabla -->
+    <div class="tabla-wrapper">
+      <table mat-table [dataSource]="solicitudes" [trackBy]="trackById">
+
+        <ng-container matColumnDef="folio">
+          <th mat-header-cell *matHeaderCellDef>Folio</th>
+          <td mat-cell *matCellDef="let s">
+            <span class="folio">{{ s.folio }}</span>
+            <div class="servidor">{{ s.nombreServidor }}</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dependencia">
+          <th mat-header-cell *matHeaderCellDef>Dependencia</th>
+          <td mat-cell *matCellDef="let s">{{ s.dependencia }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let s">
+            <span class="badge badge-{{ s.estado }}">
+              {{ s.estado === 'en-progreso' ? 'En progreso' :
+                 s.estado === 'pendiente'   ? 'Pend. respuesta' : 'Completada' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="etapas">
+          <th mat-header-cell *matHeaderCellDef>Etapas del proceso</th>
+          <td mat-cell *matCellDef="let s">
+            <div class="etapas">
+              @for (etapa of s.etapas; track etapa.numero) {
+                <span class="dot {{ claseEstadoEtapa(etapa.estado) }}"
+                      [matTooltip]="tooltipEtapa(etapa)">
+                </span>
+              }
+            </div>
+            <div class="etapa-actual">
+              {{ s.etapas[s.etapaActual - 1]?.nombre }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef>Actualización</th>
+          <td mat-cell *matCellDef="let s" class="fecha">
+            {{ s.fechaActualizacion | date:'dd/MM/yyyy' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="accion">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let s">
+            <button mat-button color="primary" (click)="verDetalle(s)">
+              Ver detalle
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['folio','dependencia','estado','etapas','fecha','accion']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['folio','dependencia','estado','etapas','fecha','accion']"
+            (click)="verDetalle(row)" class="fila-clickeable">
+        </tr>
+
+      </table>
+    </div>
+
+    @if (solicitudes.length === 0) {
+      <div class="sin-resultados">No se encontraron solicitudes con los filtros seleccionados.</div>
+    }
+  }
+</div>

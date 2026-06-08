@@ -1,0 +1,327 @@
+.page-header {
+  max-width: 800px;
+  margin: 2rem auto 0;
+  padding: 0 1.5rem;
+
+  .page-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0 0 4px;
+    line-height: 1.4;
+  }
+
+  .page-subtitle {
+    font-size: 15px;
+    color: #6b7280;
+    margin: 0;
+  }
+
+  .btn-demo {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #6b7280;
+    border-color: #d1d5db;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+    }
+
+    &:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+  }
+}
+
+.stepper-wrapper {
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+/* ── Barra del stepper: solo números ── */
+::ng-deep {
+  .mat-stepper-horizontal {
+    background: transparent;
+  }
+
+  /* Header: icon arriba, label centrada abajo (flex-column) */
+  .mat-step-header {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 8px 8px !important;
+    height: auto !important;       /* anula el height: 72px de Material */
+    min-height: unset !important;
+    gap: 4px;
+    overflow: hidden;
+    border-radius: 8px !important;
+
+    /* Ripple reducido */
+    .mat-ripple-element {
+      opacity: 0.06 !important;
+    }
+
+    &:hover {
+      background-color: rgba(134, 12, 74, 0.05) !important;
+    }
+  }
+
+  /* Label visible y centrada bajo el número */
+  .mat-step-label {
+    display: block !important;
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    text-align: center !important;
+    color: #9ca3af !important;
+    white-space: nowrap;
+    overflow: visible !important;
+    min-width: unset !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .mat-step-label-active {
+    color: #860C4A !important;
+  }
+
+  .mat-step-label-selected {
+    color: #860C4A !important;
+    font-weight: 600 !important;
+  }
+
+  /* Círculo del paso */
+  .mat-step-icon {
+    background-color: #ccc;
+    color: #fff;
+    font-weight: 600;
+    flex-shrink: 0;
+    margin: 0 !important;
+  }
+
+  /* Paso activo */
+  .mat-step-icon-selected {
+    background-color: #860C4A !important;
+  }
+
+  /* Paso completado */
+  .mat-step-icon-state-done,
+  .mat-step-icon-state-edit {
+    background-color: #860C4A !important;
+    opacity: 0.65;
+  }
+
+  /* ── Líneas conectoras ── */
+  /* Línea que sigue a un paso completado → gruesa */
+  mat-step-header:has(.mat-step-icon-state-done, .mat-step-icon-state-edit)
+    + .mat-stepper-horizontal-line {
+    border-top-color: #666666;
+    border-top-width: 3px;
+  }
+
+  /* Cabecera del stepper (fila de números + labels) */
+  .mat-horizontal-stepper-header-container {
+    padding: 8px 24px;
+    background: #fff;
+    border-radius: 8px 8px 0 0;
+    border-bottom: 1px solid #eee;
+    align-items: flex-start;    /* línea y headers desde la parte superior */
+  }
+
+  /*
+   * Línea: con height:auto en el header y padding-top 8px,
+   * el centro del ícono (24px) queda a 8 + 12 = 20px desde arriba.
+   * align-self: flex-start ancla la línea al top del contenedor
+   * y margin-top la baja exactamente al centro del círculo.
+   */
+  .mat-stepper-horizontal-line {
+    border-top-color: #ddd;
+    border-top-width: 1px;
+    flex: 1;
+    min-width: 20px;
+    height: 0;
+    align-self: flex-start !important;
+    margin-top: 20px !important;
+  }
+
+  /* Área de contenido del paso */
+  .mat-horizontal-content-container {
+    background: #fff;
+    border-radius: 0 0 8px 8px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+  }
+}
+
+/* ── Encabezado dentro del contenido del paso ── */
+.step-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.step-header-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.step-badge {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.step-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 4px 0 6px;
+  line-height: 1.4;
+}
+
+.step-subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  margin: 0 0 6px;
+}
+
+.step-required-note {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.req-asterisk {
+  color: #d32f2f;
+  font-weight: 700;
+  margin-right: 2px;
+}
+
+/* ── Acciones del paso ── */
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  padding-bottom: 8px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.btn-back {
+  color: #6b7280;
+  font-weight: 400;
+}
+
+/* ── Resultado del envío ── */
+.submit-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 3rem 2rem;
+  border-radius: 12px;
+  margin: 1rem 0;
+
+  .result-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+  }
+
+  .result-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  .result-desc {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0 0 1.5rem;
+    max-width: 480px;
+  }
+
+  .result-folio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+
+    .folio-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .folio-value {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  .result-note {
+    font-size: 13px;
+    color: #9ca3af;
+    margin: 0;
+  }
+
+  &--success {
+    background: #f0fdf4;
+
+    .result-icon  { color: #16a34a; }
+    .result-title { color: #15803d; }
+    .result-folio {
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+      .folio-label { color: #166534; }
+      .folio-value { color: #15803d; }
+    }
+  }
+
+  &--error {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    color: #dc2626;
+    font-size: 14px;
+    text-align: left;
+
+    mat-icon { flex-shrink: 0; }
+  }
+}
+
+/* ── Campos del formulario ── */
+.mat-mdc-form-field {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}

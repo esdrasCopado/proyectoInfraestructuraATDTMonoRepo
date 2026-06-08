@@ -1,0 +1,184 @@
+.step-container {
+  padding-top: 0.5rem;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--primary);
+  border-left: 4px solid var(--secondary);
+  padding-left: 10px;
+  margin: 0 0 6px;
+}
+
+.section-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--secondary);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.section-desc {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 16px 14px;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid #d1d5db;
+  margin: 2rem 0;
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+  align-items: start;
+}
+
+.recursos-estandar-nota {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-left: 4px solid #0284c7;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: #0369a1;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  strong { font-weight: 600; }
+}
+
+.field-error {
+  font-size: 12px;
+  color: #d32f2f;
+  min-height: 16px;
+  line-height: 1.4;
+  padding: 2px 0 4px;
+}
+
+.field-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  &.field-full { grid-column: 1 / -1; }
+
+  mat-form-field { width: 100%; }
+}
+
+// ── Discos duros ────────────────────────────────────────────────────────────
+
+.discos-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+
+.discos-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.btn-agregar-disco {
+  font-size: 13px;
+  color: var(--primary);
+  border-color: var(--primary);
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+  }
+}
+
+.discos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.disco-card {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: #f9fafb;
+}
+
+.disco-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.disco-index {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.btn-eliminar-disco {
+  color: #ef4444;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.disco-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 16px;
+  align-items: start;
+}
+
+// ── Responsive ───────────────────────────────────────────────────────────────
+
+@media (max-width: 600px) {
+  .fields-grid {
+    grid-template-columns: 1fr;
+
+    .field-full {
+      grid-column: 1;
+    }
+  }
+
+  .disco-fields {
+    grid-template-columns: 1fr;
+  }
+}

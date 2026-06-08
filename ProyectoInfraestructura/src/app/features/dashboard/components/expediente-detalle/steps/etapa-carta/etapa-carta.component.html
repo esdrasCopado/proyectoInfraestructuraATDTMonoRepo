@@ -1,0 +1,214 @@
+<!-- Sección 1 · Datos de contacto y ente solicitante -->
+<details class="carta-seccion" open>
+  <summary class="carta-seccion-summary">
+    <span class="seccion-titulo">
+      <span class="seccion-num">1</span>
+      Datos de contacto y ente solicitante
+    </span>
+    <span class="seccion-arrow"></span>
+  </summary>
+  <div class="carta-seccion-body">
+    @if (solicitud.carta?.areaRequirente; as area) {
+      <p class="subseccion-label">Área requirente</p>
+      <table class="datos-tabla">
+        <tr><td class="dato-key">Sector</td>      <td class="dato-val">{{ area.sector }}</td></tr>
+        <tr><td class="dato-key">Dependencia</td> <td class="dato-val">{{ area.dependencia }}</td></tr>
+        <tr><td class="dato-key">Responsable</td> <td class="dato-val">{{ area.responsable }}</td></tr>
+        <tr><td class="dato-key">Cargo</td>       <td class="dato-val">{{ area.cargo }}</td></tr>
+        <tr><td class="dato-key">Teléfono</td>    <td class="dato-val">{{ area.telefono }}</td></tr>
+        <tr><td class="dato-key">Correo</td>      <td class="dato-val dato-email">{{ area.correo }}</td></tr>
+      </table>
+    }
+    @if (solicitud.carta?.adminServidor; as admin) {
+      <p class="subseccion-label">Administrador del servidor</p>
+      <table class="datos-tabla">
+        <tr><td class="dato-key">Proveedor</td>     <td class="dato-val">{{ admin.proveedor }}</td></tr>
+        <tr><td class="dato-key">Dependencia</td>   <td class="dato-val">{{ admin.dependencia }}</td></tr>
+        <tr><td class="dato-key">Administrador</td> <td class="dato-val">{{ admin.responsable }}</td></tr>
+        <tr><td class="dato-key">Cargo</td>         <td class="dato-val">{{ admin.cargo }}</td></tr>
+        <tr><td class="dato-key">Teléfono</td>      <td class="dato-val">{{ admin.telefono }}</td></tr>
+        <tr><td class="dato-key">Correo</td>        <td class="dato-val dato-email">{{ admin.correo }}</td></tr>
+      </table>
+    }
+    @if (!solicitud.carta?.areaRequirente && !solicitud.carta?.adminServidor) {
+      <p class="sin-datos">Datos de contacto no disponibles.</p>
+    }
+  </div>
+</details>
+
+<!-- Sección 2 · Descripción del requerimiento -->
+<details class="carta-seccion">
+  <summary class="carta-seccion-summary">
+    <span class="seccion-titulo">
+      <span class="seccion-num">2</span>
+      Descripción del requerimiento
+    </span>
+    <span class="seccion-arrow"></span>
+  </summary>
+  <div class="carta-seccion-body">
+    @if (solicitud.carta?.descripcion; as desc) {
+      <table class="datos-tabla">
+        <tr><td class="dato-key">Uso principal</td>       <td class="dato-val">{{ desc.descripcionServidor }}</td></tr>
+        <tr><td class="dato-key">Nombre propuesto</td>    <td class="dato-val">{{ desc.nombreServidor }}</td></tr>
+        <tr><td class="dato-key">Aplicación</td>          <td class="dato-val">{{ desc.nombreAplicacion }}</td></tr>
+        <tr><td class="dato-key">Tipo de uso</td>         <td class="dato-val">{{ desc.tipoUso === 'publicado' ? 'Publicado' : 'Interno' }}</td></tr>
+        <tr><td class="dato-key">Fecha de arranque</td>   <td class="dato-val">{{ desc.fechaArranque | date:'dd/MM/yyyy' }}</td></tr>
+        <tr><td class="dato-key">Vigencia</td>            <td class="dato-val">{{ desc.vigencia }}</td></tr>
+        @if (desc.caracteristicasEspeciales) {
+          <tr><td class="dato-key">Características especiales</td><td class="dato-val">{{ desc.caracteristicasEspeciales }}</td></tr>
+        }
+      </table>
+    } @else {
+      <p class="sin-datos">Descripción no disponible.</p>
+    }
+  </div>
+</details>
+
+<!-- Sección 3 · Especificaciones técnicas -->
+<details class="carta-seccion">
+  <summary class="carta-seccion-summary">
+    <span class="seccion-titulo">
+      <span class="seccion-num">3</span>
+      Especificaciones técnicas
+    </span>
+    <span class="seccion-arrow"></span>
+  </summary>
+  <div class="carta-seccion-body">
+    @if (solicitud.carta?.specs; as sp) {
+      <table class="datos-tabla">
+        <tr><td class="dato-key">Tipo</td>              <td class="dato-val">{{ sp.tipoRequerimiento === 'estandar' ? 'Estándar' : 'Específico' }}</td></tr>
+        <tr><td class="dato-key">Modalidad</td>         <td class="dato-val">{{ sp.modalidad === 'nuevo' ? 'Nuevo' : 'Renovación' }}</td></tr>
+        <tr><td class="dato-key">Sistema operativo</td> <td class="dato-val">{{ soLabel(sp.sistemaOperativo) }}</td></tr>
+        <tr><td class="dato-key">vCores</td>            <td class="dato-val">{{ sp.vCores }}</td></tr>
+        <tr><td class="dato-key">Memoria RAM</td>       <td class="dato-val">{{ sp.memoriaRam }} GB</td></tr>
+        <tr><td class="dato-key">Almacenamiento</td>    <td class="dato-val">{{ totalAlmacenamiento(sp.discosDuros) }} GB</td></tr>
+        @if (sp.motorBD) {
+          <tr><td class="dato-key">Motor BD</td>        <td class="dato-val">{{ sp.motorBD }}</td></tr>
+        }
+        @if (sp.puertos) {
+          <tr><td class="dato-key">Puertos</td>         <td class="dato-val">{{ sp.puertos }}</td></tr>
+        }
+        @if (sp.integraciones) {
+          <tr><td class="dato-key">Integraciones</td>   <td class="dato-val">{{ sp.integraciones }}</td></tr>
+        }
+      </table>
+    } @else {
+      <p class="sin-datos">Especificaciones no disponibles.</p>
+    }
+  </div>
+</details>
+
+<!-- Sección 4 · Infraestructura · Subdominio y VPN -->
+@if ((solicitud.vpns && solicitud.vpns.length > 0) || (solicitud.subdominios && solicitud.subdominios.length > 0)) {
+  <details class="carta-seccion" [open]="solicitud.etapaActual >= 5">
+    <summary class="carta-seccion-summary">
+      <span class="seccion-titulo">
+        <span class="seccion-num">4</span>
+        Infraestructura · Subdominio y VPN
+      </span>
+      <span class="seccion-arrow"></span>
+    </summary>
+    <div class="carta-seccion-body">
+
+      @if (solicitud.vpns && solicitud.vpns.length > 0) {
+        <p class="subseccion-label">VPN · {{ solicitud.vpns.length }} asignada{{ solicitud.vpns.length > 1 ? 's' : '' }}</p>
+        <div class="infra-cards">
+          @for (v of solicitud.vpns; track v.assignedAt) {
+            <div class="infra-card">
+
+              <!-- Cabecera común -->
+              <div class="infra-card__header">
+                <span class="infra-card__tipo">{{ vpnTipoLabel(v.vpnType) }}</span>
+                @if (v.folio) {
+                  <span class="infra-card__folio">{{ v.folio }}</span>
+                }
+              </div>
+
+              <!-- ── Dependencia ── -->
+              @if (v.vpnType === 'dependencia') {
+                <div class="infra-card__grid">
+                  <div><span class="dato-key">Responsable</span><span class="dato-val">{{ v.responsable }}</span></div>
+                  <div><span class="dato-key">Cargo</span><span class="dato-val">{{ v.cargo || '—' }}</span></div>
+                  <div><span class="dato-key">Teléfono</span><span class="dato-val">{{ v.phone || '—' }}</span></div>
+                  <div><span class="dato-key">Correo</span><span class="dato-val">{{ v.email || '—' }}</span></div>
+                  <div><span class="dato-key">Estado</span><span class="dato-val">
+                    <span class="estatus-badge estatus-badge--{{ (v.estado ?? '') | lowercase }}">{{ v.estado || '—' }}</span>
+                  </span></div>
+                  <div><span class="dato-key">Asignación</span><span class="dato-val">{{ v.assignedAt | date:'dd/MM/yyyy' }}</span></div>
+                </div>
+              }
+
+              <!-- ── Actualización ── -->
+              @if (v.vpnType === 'actualizacion') {
+                <div class="infra-card__grid">
+                  <div><span class="dato-key">Responsable</span><span class="dato-val">{{ v.responsable }}</span></div>
+                  <div><span class="dato-key">Perfil anterior</span><span class="dato-val">{{ v.perfilAnterior || '—' }}</span></div>
+                  <div><span class="dato-key">IP VPN</span><span class="dato-val">{{ v.vpnIp || '—' }}</span></div>
+                  @if (v.servidores) {
+                    <div><span class="dato-key">Servidores</span><span class="dato-val">{{ v.servidores }}</span></div>
+                  }
+                  <div><span class="dato-key">Estado</span><span class="dato-val">
+                    <span class="estatus-badge estatus-badge--{{ (v.estado ?? '') | lowercase }}">{{ v.estado || '—' }}</span>
+                  </span></div>
+                  <div><span class="dato-key">Asignación</span><span class="dato-val">{{ v.assignedAt | date:'dd/MM/yyyy' }}</span></div>
+                </div>
+              }
+
+              <!-- ── Proveedor ── -->
+              @if (v.vpnType === 'proveedor') {
+                <div class="infra-card__grid">
+                  <div><span class="dato-key">Responsable</span><span class="dato-val">{{ v.responsable }}</span></div>
+                  <div><span class="dato-key">Cargo</span><span class="dato-val">{{ v.cargo || '—' }}</span></div>
+                  <div><span class="dato-key">Teléfono</span><span class="dato-val">{{ v.phone || '—' }}</span></div>
+                  <div><span class="dato-key">Correo</span><span class="dato-val">{{ v.email || '—' }}</span></div>
+                  <div><span class="dato-key">Empresa</span><span class="dato-val">{{ v.empresa || '—' }}</span></div>
+                  <div><span class="dato-key">IP VPN</span><span class="dato-val">{{ v.vpnIp || '—' }}</span></div>
+                  <div><span class="dato-key">Vigencia</span><span class="dato-val">{{ v.vigenciaDias ? v.vigenciaDias + ' días' : '—' }}</span></div>
+                  @if (v.fechaExpiracion) {
+                    <div><span class="dato-key">Expiración</span><span class="dato-val">{{ v.fechaExpiracion | date:'dd/MM/yyyy' }}</span></div>
+                  }
+                  <div><span class="dato-key">Estado</span><span class="dato-val">
+                    <span class="estatus-badge estatus-badge--{{ (v.estado ?? '') | lowercase }}">{{ v.estado || '—' }}</span>
+                  </span></div>
+                  <div><span class="dato-key">Asignación</span><span class="dato-val">{{ v.assignedAt | date:'dd/MM/yyyy' }}</span></div>
+                </div>
+              }
+
+            </div>
+          }
+        </div>
+      }
+
+      @if (solicitud.subdominios && solicitud.subdominios.length > 0) {
+        <p class="subseccion-label" [class.mt-12]="solicitud.vpns && solicitud.vpns.length > 0">
+          Subdominio · {{ solicitud.subdominios.length }} asignado{{ solicitud.subdominios.length > 1 ? 's' : '' }}
+        </p>
+        <div class="infra-tabla-wrap">
+          <table class="infra-tabla">
+            <thead>
+              <tr>
+                <th>URL</th>
+                <th>Puerto</th>
+                <th>Estado</th>
+                <th>SSL</th>
+                <th>Asignación</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (d of solicitud.subdominios; track d.requestedName) {
+                <tr>
+                  <td>{{ d.requestedName }}</td>
+                  <td>{{ d.port || '—' }}</td>
+                  <td><span class="estatus-badge estatus-badge--{{ d.status | lowercase }}">{{ d.status }}</span></td>
+                  <td>{{ d.sslRequired ? 'Sí' : 'No' }}</td>
+                  <td>{{ d.assignedAt | date:'dd/MM/yyyy' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+    </div>
+  </details>
+}

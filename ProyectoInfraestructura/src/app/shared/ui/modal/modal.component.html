@@ -1,0 +1,11 @@
+<div class="popup-overlay" *ngIf="mostrarPopup">
+    <div class="popup">
+        <button class="close-btn" (click)="cerrarPopup()">×</button>
+        <div class="icon">
+            <img [src]="iconSrc" alt="Icon" />
+        </div>
+        <h2 class="titulo">{{titulo}}</h2>
+        <p class="contenido" [innerHTML]="mensaje"></p>
+        <button class="btn-cerrar" (click)="cerrarPopup()">Cerrar</button>
+    </div>
+</div>

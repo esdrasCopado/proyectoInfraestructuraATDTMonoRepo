@@ -1,0 +1,626 @@
+<div class="detalle-container">
+
+  @if (cargando) {
+    <div class="estado-carga">
+      <mat-spinner diameter="36"></mat-spinner>
+      <span>Cargando expediente...</span>
+    </div>
+  } @else if (error) {
+    <div class="estado-error">No se pudo cargar el expediente.</div>
+  } @else if (solicitud) {
+
+    <!-- Encabezado -->
+    <div class="exp-header">
+      <div>
+        <p class="exp-folio">{{ solicitud.folio }} · Registrada el {{ solicitud.fechaRegistro | date:'dd/MM/yyyy' }}</p>
+        <h1 class="exp-title">{{ solicitud.dependencia }}</h1>
+        <p class="exp-sub">{{ solicitud.nombreServidor }}</p>
+      </div>
+      <span class="badge {{ solicitud.estado | estatusBadge }}">
+        {{ solicitud.estado | estadoLabel }}
+      </span>
+    </div>
+
+    <!-- Etapa actual -->
+    <div class="etapa-actual-card">
+      <div class="etapa-actual-info">
+        <span class="etapa-actual-num">Etapa {{ etapaActualVisible }}</span>
+        <span class="etapa-actual-nombre">{{ etapaInfo?.nombre }}</span>
+        <span class="etapa-actual-rf">{{ etapaInfo?.rf }}</span>
+      </div>
+      <div class="etapa-actual-rol">
+        <span class="etapa-actual-rol-label">Rol</span>
+        <span class="etapa-actual-rol-value">{{ etapaInfo?.rol }}</span>
+      </div>
+      <div class="etapa-progress-wrap">
+        <div class="etapa-progress-track">
+          @for (i of [].constructor(totalEtapas); track $index) {
+            <div class="etapa-progress-seg"
+                 [class.seg-done]="solicitudCompletada || $index + 1 < solicitud.etapaActual"
+                 [class.seg-active]="!solicitudCompletada && $index + 1 === solicitud.etapaActual">
+            </div>
+          }
+        </div>
+        <span class="etapa-progress-label">{{ etapaActualVisible }} / {{ totalEtapas }}</span>
+      </div>
+    </div>
+
+    <!-- Origen de la solicitud -->
+    <div class="card origen-card">
+      <p class="card-title">Origen de la solicitud</p>
+      <div class="origen-grid">
+        <div>
+          <p class="field-label">Folio</p>
+          <p class="field-value">{{ solicitud.folio }}</p>
+        </div>
+        <div>
+          <p class="field-label">Enviada</p>
+          <p class="field-value">{{ solicitud.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+        <div>
+          <p class="field-label">Enviada por</p>
+          <p class="field-value">{{ solicitud.carta?.areaRequirente?.responsable || '—' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layout principal -->
+    <div class="layout">
+
+      <!-- ── Columna izquierda ────────────────────────────────────────────── -->
+      <div class="exp-carta">
+        @if (puedeActuar) {
+        @switch (solicitud.etapaActual) {
+          @case (1) {
+            <app-etapa-carta [solicitud]="solicitud" />
+          }
+          @case (2) {
+            <app-etapa-validacion #etapaValidacion [solicitud]="solicitud" />
+          }
+          @case (3) {
+            <app-etapa-creacion #etapaCreacion [solicitud]="solicitud" />
+          }
+          @case (4) {
+            <app-etapa-verificacion #etapaVerificacion [solicitud]="solicitud" [etapa]="4" />
+          }
+          @case (5) {
+            <app-etapa-verificacion #etapaVerificacion [solicitud]="solicitud" [etapa]="5" />
+          }
+          @case (6) {
+            <app-etapa-verificacion #etapaVerificacion [solicitud]="solicitud" [etapa]="6" />
+          }
+          @case (7) {
+            <app-etapa-vpn #etapaVpn [solicitud]="solicitud" />
+          }
+          @case (8) {
+            <app-etapa-subdominio #etapaSubdominio [solicitud]="solicitud" />
+          }
+          @case (9) {
+            <app-etapa-credenciales #etapaCredenciales [solicitud]="solicitud" />
+          }
+          @case (10) {
+            <app-etapa-waf #etapaWaf [solicitud]="solicitud" />
+          }
+          @case (11) {
+            <app-etapa-evidencias #etapaEvidencias
+              [solicitud]="solicitud"
+              [esRevision]="esRevisionEvidencias"
+              [motivoRechazoAnterior]="motivoRechazoAnterior"
+              [iteracion]="iteracionEvidencias"
+              [historicoRechazadas]="historicoRechazadas"
+              [evidenciasPendientes]="evidenciasPendientes" />
+          }
+          @case (12) {
+            <app-etapa-validacion-evidencias #etapaValidacion12
+              [solicitud]="solicitud"
+              [evidencias]="evidenciasDto"
+              [iteracion]="iteracionEvidencias"
+              (estadoCambiado)="onEstadoEvidenciaCambiado()" />
+          }
+          @case (13) {
+            <app-etapa-publicacion #etapaPublicacion [solicitud]="solicitud" />
+          }
+          @case (14) {
+            <app-etapa-vulnerabilidades #etapaVulnerabilidades
+              [solicitud]="solicitud"
+              [evidencias]="evidenciasDto"
+              [iteracion]="iteracionEvidencias" />
+          }
+        }
+        }
+      </div>
+
+      <!-- ── Columna derecha: panel de acción ────────────────────────────── -->
+      <div class="card panel-sticky">
+
+        @if (solicitudCompletada) {
+
+          <div class="panel-completada">
+            <span class="panel-completada-icon">✓</span>
+            <p class="panel-completada-titulo">Solicitud completada</p>
+            <p class="panel-completada-desc">
+              Todas las etapas del flujo fueron completadas exitosamente.
+              El servidor ha sido aprobado y publicado.
+            </p>
+          </div>
+
+          <button mat-stroked-button
+                  class="btn-accion btn-pdf-final"
+                  [disabled]="descargandoPdf"
+                  (click)="descargarPdfFinal()">
+            <span class="material-icons btn-pdf-icon">picture_as_pdf</span>
+            {{ descargandoPdf ? 'Generando PDF...' : 'Descargar PDF final' }}
+          </button>
+
+        } @else if (solicitud.etapaActual === 1 && esAdminCD) {
+
+          <p class="panel-title">Acción requerida · Etapa 1</p>
+          <p class="panel-desc">Verifica que la información esté completa antes de avanzar.</p>
+
+          <button mat-flat-button color="primary"
+                  class="btn-accion"
+                  [disabled]="guardando"
+                  (click)="onGuardar()">
+            {{ guardando ? 'Guardando...' : 'Guardar y avanzar etapa' }}
+          </button>
+
+          <button mat-stroked-button
+                  class="btn-accion"
+                  [disabled]="guardando"
+                  (click)="onSolicitarCorrecciones()">
+            Solicitar correcciones
+          </button>
+
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Al avanzar</p>
+            <p class="panel-al-avanzar-desc">Se registra acuse con tu usuario y fecha. La solicitud pasa a Etapa 2 · Validación de recursos.</p>
+          </div>
+
+        } @else if (solicitud.etapaActual === 2 && puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa 2</p>
+          <p class="panel-desc">
+            Ajusta los recursos si es necesario y asigna la IP.
+            Los campos están precargados con lo solicitado.
+          </p>
+
+          <button mat-flat-button color="primary"
+                  class="btn-accion"
+                  [disabled]="guardando"
+                  (click)="onGuardar()">
+            {{ guardando ? 'Guardando...' : 'Guardar y avanzar etapa' }}
+          </button>
+
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Al avanzar</p>
+            <p class="panel-al-avanzar-desc">Se registran los recursos asignados con tu usuario y fecha. La solicitud pasa a Etapa 3 · Creación de servidor.</p>
+          </div>
+
+        } @else if (solicitud.etapaActual === 3 && puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa 3</p>
+          <p class="panel-desc">
+            Confirma que el servidor virtual fue creado y aprovisionado
+            en el hipervisor conforme a los recursos asignados en la etapa anterior.
+          </p>
+
+          <button mat-flat-button color="primary"
+                  class="btn-accion"
+                  [disabled]="guardando"
+                  (click)="onGuardar()">
+            {{ guardando ? 'Guardando...' : 'Guardar y avanzar etapa' }}
+          </button>
+
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Al avanzar</p>
+            <p class="panel-al-avanzar-desc">Se registra acuse con tu usuario y fecha. La solicitud pasa a Etapa 4 · Comunicaciones.</p>
+          </div>
+
+        } @else if (solicitud.etapaActual === 4 && puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa 4</p>
+          <p class="panel-desc">
+            Verifica que el servidor tiene conectividad, los puertos están abiertos
+            y las reglas de firewall aplicadas. Usa tus herramientas de red y luego
+            marca el acuse en el panel izquierdo.
+          </p>
+
+          <button mat-flat-button color="primary"
+                  class="btn-accion"
+                  [disabled]="guardando"
+                  (click)="onGuardar()">
+            {{ guardando ? 'Guardando...' : 'Guardar y avanzar etapa' }}
+          </button>
+
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Al avanzar</p>
+            <p class="panel-al-avanzar-desc">Se registra verificación de comunicaciones con tu usuario y fecha (RF05). La solicitud pasa a Etapa 5 · Parches.</p>
+          </div>
+
+        } @else if (solicitud.etapaActual === 5 && puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa 5</p>
+          <p class="panel-desc">
+            Aplica los parches y actualizaciones de seguridad al servidor,
+            luego marca el acuse en el panel izquierdo.
+          </p>
+
+          <button mat-flat-button color="primary"
+                  class="btn-accion"
+                  [disabled]="guardando"
+                  (click)="onGuardar()">
+            {{ guardando ? 'Guardando...' : 'Guardar y avanzar etapa' }}
+          </button>
+
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Al avanzar</p>
+            <p class="panel-al-avanzar-desc">Se registra verificación de parches con tu usuario y fecha (RF06). La solicitud pasa a Etapa 6 · XDR y agente.</p>
+          </div>
+
+        } @else if (solicitud.etapaActual === 6 && puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa 6</p>
+          <p class="panel-desc">
+            Instala y activa el agente XDR en el servidor,
+            luego marca el acuse en el panel izquierdo.
+          </p>
+
+          <button mat-flat-button color="primary"
+                  class="btn-accion"
+                  [disabled]="guardando"
+                  (click)="onGuardar()">
+            {{ guardando ? 'Guardando...' : 'Guardar y avanzar etapa' }}
+          </button>
+
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Al avanzar</p>
+            <p class="panel-al-avanzar-desc">Se registra verificación de XDR con tu usuario y fecha (RF07). La solicitud pasa a Etapa 7 · VPN.</p>
+          </div>
+
+        } @else if (solicitud.etapaActual === 7 && puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa 7</p>
+          <p class="panel-desc">
+            Crea las VPNs en tu sistema, rellena el Folio y la IP
+            de cada una en el panel izquierdo, y confírmalas.
+          </p>
+
+          <div class="panel-progreso">
+            <span class="panel-progreso-num"
+                  [class.panel-progreso-num--ok]="etapaVpn?.todasConfirmadas ?? false">
+              {{ etapaVpn?.confirmadas ?? 0 }} / {{ etapaVpn?.total ?? 0 }}
+            </span>
+            <span class="panel-progreso-label">VPN{{ (etapaVpn?.total ?? 0) !== 1 ? 's' : '' }} confirmada{{ (etapaVpn?.total ?? 0) !== 1 ? 's' : '' }}</span>
+          </div>
+
+          <button mat-flat-button color="primary"
+                  class="btn-accion"
+                  [disabled]="guardando || !etapaVpn?.todasConfirmadas"
+                  (click)="onGuardar()">
+            {{ guardando ? 'Guardando...' : 'Guardar y avanzar etapa' }}
+          </button>
+
+          @if (!etapaVpn?.todasConfirmadas) {
+            <p class="panel-bloqueo">
+              Confirma todas las VPNs en el panel izquierdo para continuar.
+            </p>
+          }
+
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Al avanzar</p>
+            <p class="panel-al-avanzar-desc">Se registran las VPNs asignadas con tu usuario y fecha (RF08). La solicitud pasa a Etapa 8 · Subdominio.</p>
+          </div>
+
+        } @else if (solicitud.etapaActual === 9 && puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa 9</p>
+          <p class="panel-desc">
+            Revisa el resumen del expediente, descarga la Carta Responsiva en PDF
+            y registra la entrega de credenciales al solicitante.
+          </p>
+
+          <button mat-flat-button color="primary"
+                  class="btn-accion"
+                  [disabled]="guardando || !etapaCredenciales?.form?.get('entregaConfirmada')?.value"
+                  (click)="onGuardar()">
+            {{ guardando ? 'Guardando...' : 'Registrar entrega y avanzar' }}
+          </button>
+
+          @if (!etapaCredenciales?.form?.get('entregaConfirmada')?.value) {
+            <p class="panel-bloqueo">
+              Confirma la entrega de credenciales en el panel izquierdo para continuar.
+            </p>
+          }
+
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Al avanzar</p>
+            <p class="panel-al-avanzar-desc">
+              Se registra la entrega de credenciales con tu usuario y fecha (RF10).
+              La solicitud pasa a Etapa 10 · WAF — ahora en manos de la dependencia.
+            </p>
+          </div>
+
+        } @else if (solicitud.etapaActual === 8 && puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa 8</p>
+          <p class="panel-desc">
+            Confirma cada subdominio en el panel izquierdo con el nombre aprobado.
+          </p>
+
+          <div class="panel-progreso">
+            <span class="panel-progreso-num"
+                  [class.panel-progreso-num--ok]="etapaSubdominio?.todasConfirmadas">
+              {{ etapaSubdominio?.confirmadas ?? 0 }} / {{ etapaSubdominio?.total ?? 0 }}
+            </span>
+            <span class="panel-progreso-label">subdominio{{ (etapaSubdominio?.total ?? 0) !== 1 ? 's' : '' }} confirmado{{ (etapaSubdominio?.total ?? 0) !== 1 ? 's' : '' }}</span>
+          </div>
+
+          <button mat-flat-button color="primary"
+                  class="btn-accion"
+                  [disabled]="guardando || !etapaSubdominio?.todasConfirmadas"
+                  (click)="onGuardar()">
+            {{ guardando ? 'Guardando...' : 'Guardar y avanzar etapa' }}
+          </button>
+
+          @if (!etapaSubdominio?.todasConfirmadas) {
+            <p class="panel-bloqueo">
+              Confirma todos los subdominios en el panel izquierdo para continuar.
+            </p>
+          }
+
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Al avanzar</p>
+            <p class="panel-al-avanzar-desc">
+              Se registran los subdominios asignados con tu usuario y fecha (RF09).
+              Se envía notificación al Admin Centro de Datos.
+              La solicitud pasa a Etapa 9 · Credenciales.
+            </p>
+          </div>
+
+        } @else if (solicitud.etapaActual === 10 && puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa 10</p>
+          <p class="panel-desc">
+            Configura el WAF para este servidor en tu consola de administración,
+            luego confirma en el panel izquierdo.
+          </p>
+
+          <button mat-flat-button color="primary"
+                  class="btn-accion"
+                  [disabled]="guardando"
+                  (click)="onGuardar()">
+            {{ guardando ? 'Guardando...' : 'Guardar y avanzar etapa' }}
+          </button>
+
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Al avanzar</p>
+            <p class="panel-al-avanzar-desc">Se registra la configuración del WAF (RF11). La solicitud pasa a Etapa 11 · Pruebas de funcionamiento.</p>
+          </div>
+
+        } @else if (solicitud.etapaActual === 11 && puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa 11</p>
+          <p class="panel-desc">
+            Realiza las pruebas de funcionamiento de tu aplicación, genera evidencias
+            en PDF y cárgalas en el panel izquierdo.
+          </p>
+
+          @if ((etapaEvidencias?.archivos?.length ?? 0) > 0) {
+            <div class="panel-progreso">
+              <span class="panel-progreso-num panel-progreso-num--ok">
+                {{ etapaEvidencias?.archivos?.length ?? 0 }}
+              </span>
+              <span class="panel-progreso-label">
+                archivo{{ (etapaEvidencias?.archivos?.length ?? 0) !== 1 ? 's' : '' }} cargado{{ (etapaEvidencias?.archivos?.length ?? 0) !== 1 ? 's' : '' }}
+              </span>
+            </div>
+          }
+
+          <button mat-flat-button color="primary"
+                  class="btn-accion"
+                  [disabled]="guardando"
+                  (click)="onGuardar()">
+            {{ guardando ? 'Guardando...' : 'Enviar evidencias y avanzar' }}
+          </button>
+
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Al avanzar</p>
+            <p class="panel-al-avanzar-desc">Se notifica al Admin CD y al Admin de Infraestructura para revisar las evidencias (RF12). La solicitud pasa a Etapa 12 · Validación.</p>
+          </div>
+
+        } @else if (solicitud.etapaActual === 12 && puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa 12</p>
+          <p class="panel-desc">
+            Revisa las evidencias de pruebas cargadas por la dependencia
+            y toma una decisión.
+          </p>
+
+          @if (!etapaValidacion12?.modoRechazo) {
+
+            <button mat-flat-button color="primary"
+                    class="btn-accion"
+                    [disabled]="guardando || !etapaValidacion12?.todasAprobadas"
+                    (click)="onAprobacion()">
+              Aprobar evidencias
+            </button>
+
+            @if (!etapaValidacion12?.todasAprobadas) {
+              <p class="panel-bloqueo">
+                Aprueba individualmente todas las evidencias para continuar.
+              </p>
+            }
+
+            <button mat-stroked-button
+                    class="btn-accion btn-accion-warn"
+                    [disabled]="guardando || !etapaValidacion12?.hayAlgunaRechazada"
+                    (click)="etapaValidacion12?.mostrarFormRechazo()">
+              Solicitar correcciones
+            </button>
+
+            @if (!etapaValidacion12?.hayAlgunaRechazada) {
+              <p class="panel-bloqueo">
+                Rechaza al menos una evidencia antes de solicitar correcciones.
+              </p>
+            }
+
+            <div class="panel-al-avanzar">
+              <p class="panel-al-avanzar-title">Si apruebas</p>
+              <p class="panel-al-avanzar-desc">Se notifica a Admin de Vulnerabilidades y a la dependencia (RF13). La solicitud pasa a Etapa 13 · Solicitud de publicación.</p>
+            </div>
+
+          } @else {
+
+            <p class="panel-desc">
+              Completa el motivo del rechazo en el panel izquierdo y confirma.
+            </p>
+
+            <button mat-flat-button color="warn"
+                    class="btn-accion"
+                    [disabled]="guardando || etapaValidacion12?.formRechazoInvalido"
+                    (click)="onRechazo()">
+              Confirmar rechazo
+            </button>
+
+            <button mat-stroked-button
+                    class="btn-accion"
+                    (click)="etapaValidacion12?.cancelarRechazo()">
+              Cancelar
+            </button>
+
+            <div class="panel-al-avanzar">
+              <p class="panel-al-avanzar-title">Si rechazas</p>
+              <p class="panel-al-avanzar-desc">Se notifica a la dependencia con el motivo. La solicitud regresa a Etapa 11 para carga secundaria de evidencias.</p>
+            </div>
+
+          }
+
+        } @else if (solicitud.etapaActual === 13 && puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa 13</p>
+          <p class="panel-desc">
+            Confirma en el panel izquierdo que solicitas la publicación del servidor.
+            El Administrador de Vulnerabilidades será notificado.
+          </p>
+
+          <button mat-flat-button color="primary"
+                  class="btn-accion"
+                  [disabled]="guardando"
+                  (click)="onGuardar()">
+            {{ guardando ? 'Guardando...' : 'Solicitar publicación y avanzar' }}
+          </button>
+
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Al avanzar</p>
+            <p class="panel-al-avanzar-desc">Se notifica al Admin de Vulnerabilidades para el análisis de seguridad final (RF14). La solicitud pasa a Etapa 14 · Vulnerabilidades.</p>
+          </div>
+
+        } @else if (solicitud.etapaActual === 14 && puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa 14</p>
+          <p class="panel-desc">
+            Ejecuta el análisis de vulnerabilidades en tu herramienta de seguridad
+            y toma una decisión sobre la publicación.
+          </p>
+
+          @if (!etapaVulnerabilidades?.modoRechazo) {
+
+            <button mat-flat-button color="primary"
+                    class="btn-accion"
+                    [disabled]="guardando"
+                    (click)="onAprobacion()">
+              Aprobar publicación
+            </button>
+
+            <button mat-stroked-button
+                    class="btn-accion btn-accion-warn"
+                    [disabled]="guardando"
+                    (click)="etapaVulnerabilidades?.mostrarFormRechazo()">
+              Rechazar y solicitar solventación
+            </button>
+
+            <div class="panel-al-avanzar">
+              <p class="panel-al-avanzar-title">Si apruebas</p>
+              <p class="panel-al-avanzar-desc">Se notifica a la dependencia y al Admin de Infraestructura para ejecutar la publicación (RF15). El flujo queda completado.</p>
+            </div>
+
+          } @else {
+
+            <p class="panel-desc">
+              Describe los hallazgos en el panel izquierdo y confirma el rechazo.
+            </p>
+
+            <button mat-flat-button color="warn"
+                    class="btn-accion"
+                    [disabled]="guardando || etapaVulnerabilidades?.formRechazoInvalido"
+                    (click)="onRechazo()">
+              Confirmar rechazo
+            </button>
+
+            <button mat-stroked-button
+                    class="btn-accion"
+                    (click)="etapaVulnerabilidades?.cancelarRechazo()">
+              Cancelar
+            </button>
+
+            <div class="panel-al-avanzar">
+              <p class="panel-al-avanzar-title">Si rechazas</p>
+              <p class="panel-al-avanzar-desc">Se notifica a la dependencia con los hallazgos. La solicitud regresa a Etapa 11 para carga de evidencias de solventación.</p>
+            </div>
+
+          }
+
+        } @else if (puedeActuar) {
+
+          <p class="panel-title">Acción requerida · Etapa {{ solicitud.etapaActual }}</p>
+          <p class="panel-desc">
+            Completa las acciones requeridas para esta etapa
+            y avanza la solicitud cuando estés listo.
+          </p>
+
+          <button mat-flat-button color="primary"
+                  class="btn-accion"
+                  [disabled]="guardando"
+                  (click)="onGuardar()">
+            {{ guardando ? 'Guardando...' : 'Guardar y avanzar etapa' }}
+          </button>
+
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Al avanzar</p>
+            @if (siguienteEtapa) {
+              <p class="panel-al-avanzar-desc">
+                La solicitud pasa a Etapa {{ siguienteEtapa.numero }} · {{ siguienteEtapa.nombre }}.
+              </p>
+            } @else {
+              <p class="panel-al-avanzar-desc">Esta es la última etapa del flujo.</p>
+            }
+          </div>
+
+        } @else if (esDependencia && solicitud.etapaActual >= 1 && solicitud.etapaActual <= 9) {
+
+          <p class="panel-title">Solicitud en proceso</p>
+          <p class="sin-accion">
+            Tu solicitud está siendo procesada por el equipo de Centro de Datos
+            e Infraestructura. No se requiere ninguna acción de tu parte en este momento.
+          </p>
+          <div class="panel-al-avanzar">
+            <p class="panel-al-avanzar-title">Próxima acción</p>
+            <p class="panel-al-avanzar-desc">
+              Recibirás una notificación cuando el proceso llegue a la
+              Etapa 10 · WAF y necesites intervenir.
+            </p>
+          </div>
+
+        } @else {
+          <p class="panel-title">Estado de la etapa actual</p>
+          <p class="sin-accion">
+            No tienes acciones pendientes en esta etapa.
+            El proceso está en espera de otro rol.
+          </p>
+        }
+
+      </div>
+
+    </div>
+  }
+</div>

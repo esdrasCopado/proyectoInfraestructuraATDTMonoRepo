@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Solicitud y Gestión de Infraestructura - Sonora</title>
+  <link rel="icon" type="image/x-icon" href="favicon.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <div id="loginView">
+      <section class="login">
+        <div class="background"><div class="mask"></div></div>
+        <div class="pattern"></div>
+
+        <div class="login-info">
+          <div class="logos-section">
+            <img src="SonoraLogo.png" alt="Sonora" class="logo-primary" />
+            <img src="logo-transformacion-digital-white.svg" alt="Transformación Digital" class="logo-secondary" />
+            <img src="SEGOBLogo.png" alt="SEGOB" class="logo-secondary" />
+          </div>
+
+          <div class="content">
+            <h1>Solicitud y Gestión de Infraestructura de Servidores</h1>
+            <p>Portal para crear solicitudes, administrar usuarios, registrar servidores, revisar VPNs por expirar y validar reportes de vulnerabilidades.</p>
+            <div class="demo-credentials">
+              <p><strong><i class="bi bi-info-circle"></i> Demo:</strong> usuario <code>admin@local</code> / contraseña <code>admin</code></p>
+              <p><strong><i class="bi bi-hdd-stack"></i> Sin Docker:</strong> el modo local usa <code>SQLite</code> automáticamente.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="login-form">
+          <div class="form-wrapper">
+            <img src="IconInicio.svg" alt="Inicio" class="form-icon" />
+            <h2>INICIO DE SESIÓN</h2>
+
+            <form id="loginForm">
+              <div class="form-inputs">
+                <div class="input-group">
+                  <input id="email" type="text" placeholder=" " required />
+                  <label for="email"><i class="bi bi-envelope"></i> Correo Electrónico</label>
+                </div>
+
+                <div class="input-group">
+                  <input id="password" type="password" placeholder=" " required />
+                  <label for="password"><i class="bi bi-lock"></i> Contraseña</label>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-login">Iniciar Sesión</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="appView" style="display:none;">
+      <nav class="navbar">
+        <div class="navbar-container">
+          <div class="navbar-brand">
+            <img src="SonoraLogo.png" alt="Logo" class="navbar-logo" />
+            <div class="brand-text">
+              <h2>Sistema de Gestión de Infraestructura</h2>
+              <p id="systemInfo">Modo local listo para pruebas</p>
+            </div>
+          </div>
+
+          <div class="navbar-user">
+            <div class="user-info">
+              <i class="bi bi-person-circle"></i>
+              <span id="userDisplay">Usuario</span>
+            </div>
+            <button id="btnLogout" class="btn-logout"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</button>
+          </div>
+        </div>
+      </nav>
+
+      <div class="app-container">
+        <aside class="sidebar">
+          <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="dashboard-section"><i class="bi bi-speedometer2"></i> Dashboard</a>
+            <a href="#" class="nav-item" data-section="create-request"><i class="bi bi-file-earmark-plus"></i> Nueva Solicitud</a>
+            <a href="#" class="nav-item" data-section="requests-list"><i class="bi bi-list-check"></i> Solicitudes</a>
+            <a href="#" class="nav-item" data-section="users-admin"><i class="bi bi-people"></i> Usuarios</a>
+            <a href="#" class="nav-item" data-section="reports-section"><i class="bi bi-graph-up"></i> Reportes</a>
+            <a href="#" class="nav-item" data-section="forms"><i class="bi bi-file-text"></i> Plantillas</a>
+          </nav>
+        </aside>
+
+        <main class="main-content">
+          <section id="dashboard-section" class="content-section">
+            <div class="section-header">
+              <h2><i class="bi bi-speedometer2"></i> Dashboard Operativo</h2>
+              <p>Seguimiento del flujo completo: solicitud, aprovisionamiento, comunicaciones, parches, XDR, credenciales, WAF, validación y publicación.</p>
+            </div>
+
+            <div class="card">
+              <div id="dashboardSummary" class="report-grid"></div>
+              <div class="dashboard-columns">
+                <div id="dashboardRequestStages" class="requests-grid"></div>
+                <div id="dashboardServerStages" class="requests-grid"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="create-request" class="content-section" style="display:none;">
+            <div class="section-header">
+              <h2><i class="bi bi-file-earmark-plus"></i> Nueva Solicitud de Infraestructura</h2>
+              <p>Prueba aquí la creación completa de solicitud, servidores, VPNs, subdominios y evidencias.</p>
+            </div>
+
+            <div class="card card-primary">
+              <form id="requestForm">
+                <fieldset>
+                  <legend><i class="bi bi-info-circle"></i> Información General</legend>
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="requestTitle">Título de la Solicitud *</label>
+                      <input id="requestTitle" type="text" placeholder="ej: Infraestructura Portal de Trámites" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="requestUserId">Solicitante *</label>
+                      <select id="requestUserId" required></select>
+                    </div>
+                    <div class="form-group">
+                      <label for="architecture">Arquitectura *</label>
+                      <select id="architecture" required>
+                        <option value="">-- Selecciona --</option>
+                        <option value="Monolítica">Monolítica</option>
+                        <option value="Microservicios">Microservicios</option>
+                        <option value="Híbrida">Híbrida</option>
+                        <option value="Serverless">Serverless</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="requiredServices">Servicios Requeridos *</label>
+                      <input id="requiredServices" type="text" placeholder="BD, App, Web, Cache..." required />
+                    </div>
+                    <div class="form-group">
+                      <label for="requestStatus">Estado Inicial</label>
+                      <select id="requestStatus">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En progreso">En progreso</option>
+                        <option value="Terminada">Terminada</option>
+                      </select>
+                    </div>
+                    <div class="form-group checkbox-group">
+                      <label><input id="requestNotification" type="checkbox" checked /> Notificación nueva</label>
+                    </div>
+                  </div>
+
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="requestFolio">Folio / expediente</label>
+                      <input id="requestFolio" type="text" placeholder="Se genera si se deja vacío" />
+                    </div>
+                    <div class="form-group">
+                      <label for="requestStage">Etapa actual</label>
+                      <select id="requestStage">
+                        <option value="Registro">Registro</option>
+                        <option value="Carta responsiva">Carta responsiva</option>
+                        <option value="Aprobación">Aprobación</option>
+                        <option value="Provisionamiento">Provisionamiento</option>
+                        <option value="Validación">Validación</option>
+                        <option value="Publicación">Publicación</option>
+                        <option value="Cierre">Cierre</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="requestPriority">Prioridad</label>
+                      <select id="requestPriority">
+                        <option value="Baja">Baja</option>
+                        <option value="Media" selected>Media</option>
+                        <option value="Alta">Alta</option>
+                        <option value="Crítica">Crítica</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="requestRequiredDate">Fecha requerida</label>
+                      <input id="requestRequiredDate" type="date" />
+                    </div>
+                    <div class="form-group">
+                      <label for="requestOwner">Responsable actual</label>
+                      <input id="requestOwner" type="text" placeholder="Administrador de Infraestructura" />
+                    </div>
+                    <div class="form-group">
+                      <label for="requestCartaFolio">Folio carta responsiva</label>
+                      <input id="requestCartaFolio" type="text" placeholder="ATDT-2026-0001" />
+                    </div>
+                  </div>
+
+                  <div class="form-group full-width">
+                    <label for="description">Descripción *</label>
+                    <textarea id="description" placeholder="Describe el propósito y contexto del proyecto..." required></textarea>
+                  </div>
+
+                  <div class="form-group full-width">
+                    <label for="requestTasks">To do list / tareas pendientes</label>
+                    <textarea id="requestTasks" placeholder="Ej: Crear VPN, asignar WAF, validar certificados..."></textarea>
+                  </div>
+
+                  <div class="form-group full-width">
+                    <label for="requestComments">Comentarios de seguimiento</label>
+                    <textarea id="requestComments" placeholder="Observaciones del área solicitante, dependencias, ventanas de mantenimiento o publicación..."></textarea>
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend><i class="bi bi-server"></i> Servidores</legend>
+                  <p class="fieldset-help">La IP es opcional y puedes registrar recursos predeterminados, VPN y subdominios.</p>
+                  <div id="servers" class="servers-container"></div>
+                  <button type="button" id="addServer" class="btn-secondary"><i class="bi bi-plus-lg"></i> Agregar Servidor</button>
+                </fieldset>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn-primary"><i class="bi bi-check-circle"></i> Enviar Solicitud</button>
+                  <button type="reset" class="btn-secondary"><i class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <section id="requests-list" class="content-section" style="display:none;">
+            <div class="section-header">
+              <h2><i class="bi bi-list-check"></i> Solicitudes Registradas</h2>
+              <p>Consulta solicitudes, servidores asociados y marca notificaciones como leídas.</p>
+            </div>
+            <div class="card">
+              <div class="toolbar-row">
+                <button id="refreshRequests" class="btn-secondary"><i class="bi bi-arrow-repeat"></i> Recargar</button>
+                <a href="/swagger" target="_blank" class="btn-secondary"><i class="bi bi-box-arrow-up-right"></i> Swagger</a>
+              </div>
+              <div id="requestsList" class="requests-grid">Cargando solicitudes...</div>
+            </div>
+          </section>
+
+          <section id="users-admin" class="content-section" style="display:none;">
+            <div class="section-header">
+              <h2><i class="bi bi-people"></i> Usuarios</h2>
+              <p>Alta rápida de usuarios con rol, puesto, celular y número de puesto.</p>
+            </div>
+
+            <div class="card card-primary">
+              <form id="userForm">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="userName">Nombre completo *</label>
+                    <input id="userName" type="text" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="userEmail">Correo *</label>
+                    <input id="userEmail" type="email" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="userPassword">Contraseña *</label>
+                    <input id="userPassword" type="text" value="admin123" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="userRole">Rol *</label>
+                    <select id="userRole"></select>
+                  </div>
+                  <div class="form-group">
+                    <label for="userPuesto">Puesto</label>
+                    <input id="userPuesto" type="text" />
+                  </div>
+                  <div class="form-group">
+                    <label for="userCelular">Celular</label>
+                    <input id="userCelular" type="text" />
+                  </div>
+                  <div class="form-group">
+                    <label for="userNumeroPuesto">Número de puesto</label>
+                    <input id="userNumeroPuesto" type="text" />
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn-primary"><i class="bi bi-person-plus"></i> Crear Usuario</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="card">
+              <div class="toolbar-row">
+                <button id="refreshUsers" class="btn-secondary"><i class="bi bi-arrow-repeat"></i> Recargar</button>
+              </div>
+              <div id="usersList" class="requests-grid">Cargando usuarios...</div>
+            </div>
+          </section>
+
+          <section id="reports-section" class="content-section" style="display:none;">
+            <div class="section-header">
+              <h2><i class="bi bi-graph-up"></i> Reportes</h2>
+              <p>Seguimiento de vulnerabilidades, revisiones anuales, VPNs por expirar y nuevas solicitudes.</p>
+            </div>
+
+            <div class="card">
+              <div class="toolbar-row wrap">
+                <button id="refreshReports" class="btn-secondary"><i class="bi bi-arrow-repeat"></i> Actualizar reportes</button>
+                <input id="reportSearch" type="text" placeholder="Buscar por hostname, folio o solicitud" />
+                <select id="reportStageFilter">
+                  <option value="">Todas las etapas</option>
+                  <option value="Provisionamiento">Provisionamiento</option>
+                  <option value="Comunicaciones">Comunicaciones</option>
+                  <option value="Parches">Parches</option>
+                  <option value="XDR">XDR</option>
+                  <option value="Credenciales">Credenciales</option>
+                  <option value="WAF">WAF</option>
+                  <option value="Validación">Validación</option>
+                  <option value="Publicación">Publicación</option>
+                </select>
+                <select id="reportStatusFilter">
+                  <option value="">Todos los estados</option>
+                  <option value="Pendiente">Pendiente</option>
+                  <option value="En progreso">En progreso</option>
+                  <option value="Terminada">Terminada</option>
+                </select>
+                <label class="inline-checkbox"><input id="reportOnlyPending" type="checkbox" /> Solo pendientes</label>
+                <button id="exportReportCsv" class="btn-secondary"><i class="bi bi-download"></i> Exportar CSV</button>
+                <a href="/health" target="_blank" class="btn-secondary"><i class="bi bi-heart-pulse"></i> Health</a>
+              </div>
+              <div id="reportSummary" class="report-grid"></div>
+              <div id="reportDetails" class="requests-grid"></div>
+            </div>
+          </section>
+
+          <section id="forms" class="content-section" style="display:none;">
+            <div class="section-header">
+              <h2><i class="bi bi-file-text"></i> Plantillas Disponibles</h2>
+              <p>Accede a formatos de apoyo y a la interfaz de Swagger para probar toda la API.</p>
+            </div>
+
+            <div class="card" style="margin-bottom:1.25rem;">
+              <div class="toolbar-row">
+                <div class="request-title">Folios de cartas responsivas recientes</div>
+              </div>
+              <div id="cartasList" class="requests-grid">Cargando cartas...</div>
+            </div>
+
+            <div class="templates-grid">
+              <div class="template-card">
+                <div class="template-icon"><i class="bi bi-file-earmark-pdf"></i></div>
+                <h3>Carta Responsiva Simple</h3>
+                <p>Formato estándar para solicitud de un servidor único.</p>
+                <a href="/forms/CartaResponsiva.html" target="_blank" class="btn-secondary btn-block"><i class="bi bi-box-arrow-up-right"></i> Abrir</a>
+              </div>
+              <div class="template-card">
+                <div class="template-icon"><i class="bi bi-files"></i></div>
+                <h3>Carta Responsiva Múltiple</h3>
+                <p>Formato para agrupar múltiples servidores dentro de una sola solicitud.</p>
+                <a href="/forms/CartaResponsivaMultiple.html" target="_blank" class="btn-secondary btn-block"><i class="bi bi-box-arrow-up-right"></i> Abrir</a>
+              </div>
+              <div class="template-card">
+                <div class="template-icon"><i class="bi bi-code-square"></i></div>
+                <h3>Swagger API</h3>
+                <p>Prueba todos los endpoints CRUD y reportes desde el navegador.</p>
+                <a href="/swagger" target="_blank" class="btn-secondary btn-block"><i class="bi bi-box-arrow-up-right"></i> Abrir</a>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

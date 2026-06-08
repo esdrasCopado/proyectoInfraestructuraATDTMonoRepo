@@ -1,0 +1,119 @@
+<div class="step-container">
+
+  <!-- Sección: Identificación del servidor -->
+  <section class="form-section" aria-labelledby="desc-heading">
+    <h3 id="desc-heading" class="section-title">
+      <span class="section-number">1</span>
+      Identificación del servidor
+    </h3>
+    <p class="section-desc">Nombre e información general del servidor solicitado</p>
+
+    <div [formGroup]="form" class="fields-grid">
+
+      <div class="field-wrap field-full">
+        <mat-form-field appearance="outline">
+          <mat-label>Descripción del servidor</mat-label>
+          <input matInput formControlName="descripcionServidor"
+                 autocomplete="off"
+                 [attr.aria-describedby]="isInvalid('descripcionServidor') ? 'desc-servidor-error' : null"
+                 [attr.aria-invalid]="isInvalid('descripcionServidor')">
+        </mat-form-field>
+        @if (hasError('descripcionServidor', 'required')) {
+          <span id="desc-servidor-error" class="field-error" role="alert">⚠ Ingresa la descripción del servidor</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre del servidor</mat-label>
+          <input matInput formControlName="nombreServidor"
+                 autocomplete="off"
+                 [attr.aria-describedby]="isInvalid('nombreServidor') ? 'nombre-servidor-error' : null"
+                 [attr.aria-invalid]="isInvalid('nombreServidor')">
+        </mat-form-field>
+        @if (hasError('nombreServidor', 'required')) {
+          <span id="nombre-servidor-error" class="field-error" role="alert">⚠ Ingresa el nombre del servidor</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre de la aplicación</mat-label>
+          <input matInput formControlName="nombreAplicacion"
+                 autocomplete="off"
+                 [attr.aria-describedby]="isInvalid('nombreAplicacion') ? 'nombre-app-error' : null"
+                 [attr.aria-invalid]="isInvalid('nombreAplicacion')">
+        </mat-form-field>
+        @if (hasError('nombreAplicacion', 'required')) {
+          <span id="nombre-app-error" class="field-error" role="alert">⚠ Ingresa el nombre de la aplicación</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Tipo de uso</mat-label>
+          <mat-select formControlName="tipoUso"
+                      [attr.aria-describedby]="isInvalid('tipoUso') ? 'tipo-uso-error' : null">
+            <mat-option value="interno">Interno</mat-option>
+            <mat-option value="externo">Externo</mat-option>
+          </mat-select>
+        </mat-form-field>
+        @if (hasError('tipoUso', 'required')) {
+          <span id="tipo-uso-error" class="field-error" role="alert">⚠ Selecciona el tipo de uso</span>
+        }
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="section-divider" aria-hidden="true">
+
+  <!-- Sección: Planificación -->
+  <section class="form-section" aria-labelledby="plan-heading">
+    <h3 id="plan-heading" class="section-title">
+      <span class="section-number">2</span>
+      Planificación
+    </h3>
+    <p class="section-desc">Fechas y período de vigencia del servicio</p>
+
+    <div [formGroup]="form" class="fields-grid">
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha de arranque</mat-label>
+          <input matInput type="date" formControlName="fechaArranque"
+                 [attr.aria-describedby]="isInvalid('fechaArranque') ? 'fecha-error' : null"
+                 [attr.aria-invalid]="isInvalid('fechaArranque')">
+        </mat-form-field>
+        @if (hasError('fechaArranque', 'required')) {
+          <span id="fecha-error" class="field-error" role="alert">⚠ Selecciona la fecha de arranque</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Vigencia</mat-label>
+          <input matInput formControlName="vigencia"
+                 autocomplete="off"
+                 placeholder="Ej. 1 año"
+                 [attr.aria-describedby]="isInvalid('vigencia') ? 'vigencia-error' : null"
+                 [attr.aria-invalid]="isInvalid('vigencia')">
+        </mat-form-field>
+        @if (hasError('vigencia', 'required')) {
+          <span id="vigencia-error" class="field-error" role="alert">⚠ Ingresa la vigencia del servicio</span>
+        }
+      </div>
+
+      <div class="field-wrap field-full">
+        <mat-form-field appearance="outline">
+          <mat-label>Características especiales (opcional)</mat-label>
+          <textarea matInput formControlName="caracteristicasEspeciales"
+                    rows="3"
+                    autocomplete="off"></textarea>
+        </mat-form-field>
+      </div>
+
+    </div>
+  </section>
+
+</div>

@@ -1,0 +1,410 @@
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+  /* Paleta institucional */
+  --primary:        #960E53;           /* Rosa cactus — color de marca */
+  --primary-dark:   #410324;           /* Púrpura oscuro — títulos */
+  --accent:         #DC7F37;           /* Dorado — selección activa */
+  --secondary:      #DC7F37;
+
+  /* Menú lateral */
+  --menu-bg:              #960E53;
+  --text-on-menu:         #ffffff;
+  --text-on-menu-muted:   rgba(255, 255, 255, 0.5);
+  --module-active-bg:     rgba(255, 255, 255, 0.9);
+  --submodule-active:     #DC7F37;
+
+  /* Contenido */
+  --bg-light:  #f4f6f9;
+  --text-dark: #333;
+
+  /* Estados de formulario */
+  --state-focus: #1976d2;
+  --state-valid: #388e3c;
+  --state-error: #d32f2f;
+
+  /* Tipografía */
+  --font-title: 'Montserrat', sans-serif;
+  --font-body:  'Roboto', sans-serif;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* El sidebar ocupa la altura total — sin padding-top necesario */
+.main-content {
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+h4 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+h5 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Propaga Roboto a todos los componentes de Angular Material */
+.mat-typography,
+.mat-mdc-form-field,
+.mat-mdc-select,
+.mat-mdc-option,
+.mat-step-label,
+.mat-mdc-button,
+.mat-mdc-flat-button {
+  font-family: 'Roboto', sans-serif !important;
+}
+
+/* Fix: label flotante de mat-form-field no se recorta */
+.mat-mdc-form-field {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+
+  /* Quita el espacio reservado para mat-error interno */
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+
+/* Mensaje de error fuera del mat-form-field */
+.field-error {
+  display: block;
+  font-size: 12px;
+  color: #f44336;
+  margin-top: 2px;
+  margin-bottom: 8px;
+  padding-left: 16px;
+}
+
+/* Espacio superior en contenedores de pasos para que el label tenga sitio al flotar */
+[formGroup] {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0.5rem;
+  overflow: visible;
+}
+
+/* ── Angular Material — estados de formulario ── */
+
+/* Botones primary */
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-flat-button.mat-primary {
+  --mdc-filled-button-container-color: var(--primary);
+  --mdc-filled-button-hover-container-color: var(--primary-dark);
+}
+
+/* Stepper: paso activo */
+.mat-step-icon-selected {
+  background-color: var(--state-focus) !important;
+}
+
+/* Stepper: paso completado */
+.mat-step-icon-state-done,
+.mat-step-icon-state-edit {
+  background-color: var(--state-valid) !important;
+}
+
+/* ── FOCUS — label azul ── */
+.mat-mdc-form-field.mat-focused:not(.mat-form-field-invalid) {
+  .mat-mdc-floating-label { color: var(--state-focus) !important; }
+}
+
+/* ── VALID — label verde ── */
+.mat-mdc-form-field.ng-valid.ng-dirty:not(.mat-focused):not(.mat-form-field-invalid) {
+  .mat-mdc-floating-label { color: var(--state-valid) !important; }
+}
+
+/* El color de error lo maneja Angular Material por defecto */
+
+/* Fix: el área de error (subscript) no debe quedar recortada dentro del stepper */
+.mat-horizontal-stepper-content,
+.mat-horizontal-content-container {
+  overflow: visible !important;
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-subscript-wrapper {
+  overflow: visible;
+}
+
+/* Títulos h3 con acento secundario */
+h3 {
+  color: var(--primary);
+  border-left: 4px solid var(--secondary);
+  padding-left: 10px;
+  margin-top: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* ── Stepper — labels legibles ── */
+.mat-stepper-horizontal {
+  .mat-step-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: unset;
+  }
+
+  .mat-step-label-selected {
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  /* Evita que la línea conectora desaparezca en pantallas ajustadas */
+  .mat-stepper-horizontal-line {
+    flex: 1;
+    min-width: 16px;
+  }
+}
+
+// ── Reportes — estilos compartidos ────────────────────────────────────────────
+
+.reporte-page {
+  padding: 28px 32px;
+  background: #f4f6f9;
+  min-height: calc(100vh - 64px);
+}
+
+.reporte-page__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.reporte-page__titulo {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+
+  h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #410324;
+    margin: 0;
+    border: none;
+    padding: 0;
+  }
+}
+
+.reporte-page__num {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #960E53;
+  background: #fdf2f7;
+  border: 1px solid #f0d0e0;
+  padding: 2px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.reporte-page__exports {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  mat-icon, .mat-icon { font-size: 16px; width: 16px; height: 16px; }
+  &:hover { opacity: 0.85; }
+
+  &--excel { background: #16a34a; color: #fff; }
+  &--pdf   { background: #dc2626; color: #fff; }
+}
+
+.reporte-filtros {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+  background: #fff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+  margin-bottom: 20px;
+
+  mat-form-field {
+    width: 160px;
+    flex-shrink: 0;
+  }
+}
+
+.btn-buscar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 20px;
+  height: 40px;
+  background: #960E53;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover { background: #7a0b43; }
+  mat-icon, .mat-icon { font-size: 18px; width: 18px; height: 18px; }
+}
+
+.btn-limpiar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  height: 40px;
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover { background: #e5e7eb; }
+  mat-icon, .mat-icon { font-size: 18px; width: 18px; height: 18px; }
+}
+
+.reporte-tabla-wrap {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+}
+
+.reporte-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  white-space: nowrap;
+
+  th {
+    background: #fdf2f7;
+    color: #410324;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 12px;
+    border-bottom: 2px solid #f0d0e0;
+  }
+
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+    vertical-align: middle;
+  }
+
+  tbody tr:nth-child(even) td { background: #fdf9fb; }
+  tbody tr:hover td { background: #fdf2f7; }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .td-folio {
+    color: #960E53;
+    font-weight: 700;
+  }
+
+  .td-num {
+    text-align: right;
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #410324;
+  }
+
+  .td-empty {
+    text-align: center;
+    color: #9ca3af;
+    padding: 40px 16px;
+    font-style: italic;
+  }
+
+  tfoot .fila-suma td {
+    background: #fdf2f7;
+    font-weight: 700;
+    color: #410324;
+    border-top: 2px solid #960E53;
+    padding: 10px 14px;
+
+    &.suma-label { text-align: right; font-size: 12px; }
+  }
+}
+
+.estatus-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.badge-completado { background: #dcfce7; color: #166534; }
+  &.badge-progreso   { background: #fdf2f7; color: #960E53; }
+  &.badge-pendiente  { background: #fef9c3; color: #854d0e; }
+  &.badge-vencido    { background: #fee2e2; color: #991b1b; }
+  &.badge-default    { background: #f3f4f6; color: #6b7280; }
+}

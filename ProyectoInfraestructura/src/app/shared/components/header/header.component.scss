@@ -1,0 +1,302 @@
+// ── Header del área de contenido ─────────────────────────────────────────────
+
+.header {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  height: 64px;
+  gap: 12px;
+}
+
+// ── Página actual (Montserrat Bold, color marca) ──────────────────────────────
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.nav-separator {
+  display: flex;
+  align-items: center;
+  color: #c4b5c0;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.nav-pagina {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #410324;
+  letter-spacing: 0.01em;
+}
+
+// ── Spacer ────────────────────────────────────────────────────────────────────
+
+.header-spacer { flex: 1; }
+
+// ── Acciones ──────────────────────────────────────────────────────────────────
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: #f3f4f6;
+    color: #960E53;
+  }
+
+  mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+
+  // Variante con etiqueta (Nueva solicitud, Reportes)
+  &.action-btn--labeled {
+    gap: 6px;
+    padding: 0 14px 0 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #960E53;
+    height: 38px;
+
+    mat-icon {
+      color: #960E53;
+    }
+
+    &:hover {
+      background: #fdf2f7;
+      border-color: #960E53;
+    }
+  }
+}
+
+// ── Botón disparador del menú de usuario ──────────────────────────────────────
+
+.user-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fdf2f7;
+  border: 1px solid #f0d0e0;
+  border-radius: 10px;
+  padding: 6px 12px 6px 8px;
+  cursor: pointer;
+  color: #410324;
+  transition: background 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #f9e6f0;
+    border-color: #960E53;
+  }
+}
+
+.user-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #960E53;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #410324;
+  white-space: nowrap;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role {
+  font-size: 11px;
+  color: #9d6b84;
+  white-space: nowrap;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chevron {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #9d6b84;
+}
+
+// ── Panel de notificaciones ───────────────────────────────────────────────────
+
+:host ::ng-deep .header-notif-menu {
+  .mat-mdc-menu-content { padding: 0; }
+
+  .mat-mdc-menu-panel { max-width: 360px; width: 360px; }
+}
+
+.notif-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: default;
+}
+
+.notif-panel-titulo {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #410324;
+}
+
+.notif-panel-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: #960E53;
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+
+.notif-panel-vacia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px;
+  gap: 8px;
+  color: #9ca3af;
+  cursor: default;
+
+  mat-icon { font-size: 32px; width: 32px; height: 32px; }
+  span { font-size: 13px; }
+}
+
+.notif-panel-item {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  height: auto !important;
+  padding: 10px 16px !important;
+  white-space: normal !important;
+
+  &.notif-panel-item--nueva { background: #fdf2f7; }
+  &:hover { background: #f9e6f0 !important; }
+}
+
+.notif-panel-icono {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.notif-panel-cuerpo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.notif-panel-item-titulo {
+  font-size: 12px;
+  font-weight: 700;
+  color: #960E53;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.notif-panel-item-msg {
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.35;
+  white-space: normal;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.notif-panel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #960E53;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.notif-panel-ver-todas {
+  font-size: 13px !important;
+  color: #960E53 !important;
+  font-weight: 600 !important;
+
+  mat-icon { color: #960E53 !important; }
+}
+
+// ── Menú desplegable de usuario ───────────────────────────────────────────────
+
+:host ::ng-deep .header-user-menu {
+  mat-divider { margin: 4px 0; }
+
+  .mat-mdc-menu-item {
+    font-size: 14px;
+
+    mat-icon { color: #960E53; margin-right: 4px; }
+  }
+
+  .menu-item-danger {
+    color: #dc2626;
+    mat-icon { color: #dc2626; }
+  }
+}

@@ -1,0 +1,159 @@
+<!-- Bloque 1 · Lo solicitado por la dependencia (solo lectura) -->
+<details class="bloque" open>
+  <summary class="bloque-summary">
+    <span class="bloque-titulo">
+      <span class="bloque-num">1</span>
+      Lo solicitado por la dependencia
+    </span>
+    <span class="seccion-arrow"></span>
+  </summary>
+  <div class="bloque-body">
+    <p class="bloque-hint">Solo lectura · Pertenece a la Carta Responsiva y no puede modificarse.</p>
+
+    @if (specs) {
+      <table class="ref-tabla">
+        <tr>
+          <td class="ref-key">vCPU</td>
+          <td class="ref-val">{{ specs.vCores }}</td>
+        </tr>
+        <tr>
+          <td class="ref-key">RAM</td>
+          <td class="ref-val">{{ specs.memoriaRam }} GB</td>
+        </tr>
+        <tr>
+          <td class="ref-key">Almacenamiento</td>
+          <td class="ref-val">{{ almacenamientoOriginal }} GB</td>
+        </tr>
+        <tr>
+          <td class="ref-key">Sistema operativo</td>
+          <td class="ref-val">{{ soLabel }}</td>
+        </tr>
+        <tr>
+          <td class="ref-key">Tipo de requerimiento</td>
+          <td class="ref-val">{{ tipoLabel }}</td>
+        </tr>
+      </table>
+    } @else {
+      <p class="sin-datos">Especificaciones no disponibles en la carta.</p>
+    }
+  </div>
+</details>
+
+<!-- Bloque 2 · Recursos asignados por Admin CD (editable) -->
+<div class="bloque bloque-form">
+  <p class="bloque-titulo-plain">
+    <span class="bloque-num">2</span>
+    Recursos asignados
+  </p>
+  <p class="bloque-hint">
+    Los campos vienen precargados con lo solicitado. Modifica solo si es necesario.
+    Los campos editados se marcan en naranja.
+  </p>
+
+  <form [formGroup]="form" class="asignacion-grid">
+
+    <!-- vCPU -->
+    <div class="campo-wrap" [class.campo-mod]="esMod('vCores', vCoresOriginal)">
+      <div class="campo-header">
+        <span class="campo-label">vCPU asignados</span>
+        @if (esMod('vCores', vCoresOriginal)) {
+          <span class="badge-mod">Modificado</span>
+        }
+      </div>
+      <p class="campo-ref">Solicitado: {{ vCoresOriginal }}</p>
+      <mat-form-field appearance="outline" class="campo-field">
+        <input matInput type="number" formControlName="vCores" min="1" max="128">
+        @if (form.get('vCores')?.errors?.['required']) {
+          <mat-error>Campo requerido</mat-error>
+        } @else if (form.get('vCores')?.errors?.['min']) {
+          <mat-error>Mínimo 1 vCPU</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- RAM -->
+    <div class="campo-wrap" [class.campo-mod]="esMod('memoriaRam', ramOriginal)">
+      <div class="campo-header">
+        <span class="campo-label">RAM asignada (GB)</span>
+        @if (esMod('memoriaRam', ramOriginal)) {
+          <span class="badge-mod">Modificado</span>
+        }
+      </div>
+      <p class="campo-ref">Solicitado: {{ ramOriginal }} GB</p>
+      <mat-form-field appearance="outline" class="campo-field">
+        <input matInput type="number" formControlName="memoriaRam" min="1" max="1024">
+        @if (form.get('memoriaRam')?.errors?.['required']) {
+          <mat-error>Campo requerido</mat-error>
+        } @else if (form.get('memoriaRam')?.errors?.['min']) {
+          <mat-error>Mínimo 1 GB</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- Almacenamiento -->
+    <div class="campo-wrap" [class.campo-mod]="esMod('almacenamiento', almacenamientoOriginal)">
+      <div class="campo-header">
+        <span class="campo-label">Almacenamiento asignado (GB)</span>
+        @if (esMod('almacenamiento', almacenamientoOriginal)) {
+          <span class="badge-mod">Modificado</span>
+        }
+      </div>
+      <p class="campo-ref">Solicitado: {{ almacenamientoOriginal }} GB</p>
+      <mat-form-field appearance="outline" class="campo-field">
+        <input matInput type="number" formControlName="almacenamiento" min="1">
+        @if (form.get('almacenamiento')?.errors?.['required']) {
+          <mat-error>Campo requerido</mat-error>
+        } @else if (form.get('almacenamiento')?.errors?.['min']) {
+          <mat-error>Mínimo 1 GB</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- IP -->
+    <div class="campo-wrap" [class.campo-error]="form.get('ip')?.invalid && form.get('ip')?.touched">
+      <div class="campo-header">
+        <span class="campo-label">Dirección IP asignada</span>
+      </div>
+      <p class="campo-ref">Formato IPv4 · Ej. 10.0.0.1</p>
+      <mat-form-field appearance="outline" class="campo-field">
+        <input matInput formControlName="ip" placeholder="10.0.0.1">
+        @if (form.get('ip')?.errors?.['required']) {
+          <mat-error>Campo requerido</mat-error>
+        } @else if (form.get('ip')?.errors?.['pattern']) {
+          <mat-error>Formato IPv4 inválido</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- Dependencia (confirmatorio, solo lectura) -->
+    <div class="campo-wrap campo-readonly">
+      <div class="campo-header">
+        <span class="campo-label">Dependencia</span>
+        <span class="badge-readonly">Precargado</span>
+      </div>
+      <p class="campo-ref">Asociada desde la Carta Responsiva</p>
+      <p class="campo-valor-fijo">{{ solicitud.dependencia }}</p>
+    </div>
+
+  </form>
+</div>
+
+<!-- Bloque 3 · Comentarios de validación (opcional) -->
+<div class="bloque bloque-form">
+  <p class="bloque-titulo-plain">
+    <span class="bloque-num">3</span>
+    Comentarios de validación
+    <span class="bloque-opcional">(opcional)</span>
+  </p>
+  <p class="bloque-hint">
+    Si ajustaste algún recurso a la baja, anota el motivo para trazabilidad.
+  </p>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="campo-field campo-field--full">
+      <mat-label>Motivo del ajuste</mat-label>
+      <textarea matInput formControlName="comentarios" rows="3"
+                placeholder="Ej. Se reduce RAM de 8 GB a 4 GB por política de uso interno.">
+      </textarea>
+    </mat-form-field>
+  </form>
+</div>

@@ -1,0 +1,106 @@
+<div class="reporte-page">
+
+  <div class="reporte-page__header">
+    <div class="reporte-page__titulo">
+      <span class="reporte-page__num">4.2</span>
+      <h1>Recursos solicitados (totalizado)</h1>
+    </div>
+    <div class="reporte-page__exports">
+      <button class="btn-export btn-export--excel" (click)="exportar('excel')"><mat-icon>table_view</mat-icon> Excel</button>
+      <button class="btn-export btn-export--pdf" (click)="exportar('pdf')"><mat-icon>picture_as_pdf</mat-icon> PDF</button>
+    </div>
+  </div>
+
+  <div class="reporte-filtros">
+    <mat-form-field appearance="outline" style="width:200px">
+      <mat-label>Agrupar por</mat-label>
+      <mat-select [(ngModel)]="agrupacion" (selectionChange)="cargar()">
+        <mat-option value="general">General</mat-option>
+        <mat-option value="dependencia">Por dependencia</mat-option>
+        <mat-option value="sistemaOperativo">Por sistema operativo</mat-option>
+        <mat-option value="ip">Por IP</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Desde</mat-label>
+      <input matInput type="date" [(ngModel)]="fechaDesde">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Hasta</mat-label>
+      <input matInput type="date" [(ngModel)]="fechaHasta">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Dependencia</mat-label>
+      <input matInput [(ngModel)]="dependencia" placeholder="Ej. STPS">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Sistema operativo</mat-label>
+      <input matInput [(ngModel)]="sistemaOperativo" placeholder="Ej. Linux">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>IP del servidor</mat-label>
+      <input matInput [(ngModel)]="ip" placeholder="Ej. 10.0.0.1">
+    </mat-form-field>
+    <button class="btn-buscar" (click)="cargar()"><mat-icon>search</mat-icon> Buscar</button>
+    <button class="btn-limpiar" (click)="limpiar()"><mat-icon>clear</mat-icon> Limpiar</button>
+  </div>
+
+  <div class="reporte-tabla-wrap">
+    <table class="reporte-tabla">
+      <thead>
+        <tr>
+          <th>Folio de solicitud</th>
+          <th>Sector</th>
+          <th>Dependencia</th>
+          <th>Responsable</th>
+          <th>Contacto</th>
+          <th>Estatus</th>
+          <th>IP del servidor</th>
+          <th>Administrador del servidor</th>
+          <th>Descripción del proyecto</th>
+          <th>Sistema Operativo</th>
+          <th>vCPU</th>
+          <th>RAM (GB)</th>
+          <th>Almacenamiento (GB)</th>
+          <th>Subdominio/s aprobado/s</th>
+          <th>VPN/s</th>
+          <th>Fecha creación</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of datos; track r.folioSolicitud) {
+          <tr>
+            <td class="td-folio">{{ r.folioSolicitud }}</td>
+            <td>{{ r.sector }}</td>
+            <td>{{ r.dependencia }}</td>
+            <td>{{ r.responsable }}</td>
+            <td>{{ r.contacto }}</td>
+            <td><span class="estatus-badge {{ r.estatusProcesamieto | estatusBadge }}">{{ r.estatusProcesamieto }}</span></td>
+            <td>{{ r.ipServidor }}</td>
+            <td>{{ r.administradorServidor }}</td>
+            <td>{{ r.descripcionProyecto }}</td>
+            <td>{{ r.sistemaOperativo }}</td>
+            <td class="td-num">{{ r.vcpu }}</td>
+            <td class="td-num">{{ r.ram }}</td>
+            <td class="td-num">{{ r.almacenamiento }}</td>
+            <td>{{ r.subdominiosAprobados.join(', ') }}</td>
+            <td>{{ r.vpns.join(', ') }}</td>
+            <td>{{ r.fechaCreacion }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="16" class="td-empty">Sin datos para el rango seleccionado</td></tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr class="fila-suma">
+          <td colspan="10" class="suma-label">Totales ({{ totalServidores }} servidores):</td>
+          <td class="td-num">{{ totalVcpu }}</td>
+          <td class="td-num">{{ totalRam }}</td>
+          <td class="td-num">{{ totalAlm }}</td>
+          <td colspan="3"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+</div>

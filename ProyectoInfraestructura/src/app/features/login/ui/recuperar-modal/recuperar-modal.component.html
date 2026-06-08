@@ -1,0 +1,12 @@
+<div class="popup-overlay" *ngIf="mostrarPopup">
+    <div class="popup">
+        <button class="close-btn" (click)="cerrarPopup()">×</button>
+        <h2 class="titulo">{{titulo}}</h2>
+        <p class="contenido">
+            {{mensaje}}
+        </p>
+        <input *ngIf="!correoEnviado" type="text" [(ngModel)]="correo" placeholder="Correo electrónico">
+        <button class="btn-enviar" (click)="enviarCorreo()" *ngIf="!correoEnviado">Enviar</button>
+        <button class="btn-cerrar" (click)="cerrarPopup()" *ngIf="correoEnviado">Cerrar</button>
+    </div>
+</div>

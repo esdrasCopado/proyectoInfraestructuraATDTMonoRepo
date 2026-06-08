@@ -1,0 +1,286 @@
+<div class="step-container">
+
+  <!-- Sección: Configuración base -->
+  <section class="form-section" aria-labelledby="config-heading">
+    <h3 id="config-heading" class="section-title">
+      <span class="section-number">1</span>
+      Configuración base
+    </h3>
+    <p class="section-desc">Tipo de requerimiento y sistema operativo del servidor</p>
+
+    <div [formGroup]="form" class="fields-grid">
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Tipo de requerimiento</mat-label>
+          <mat-select formControlName="tipoRequerimiento"
+                      [attr.aria-describedby]="isInvalid('tipoRequerimiento') ? 'tipo-req-error' : null">
+            <mat-option value="estandar">Estándar</mat-option>
+            <mat-option value="especifico">Específico</mat-option>
+          </mat-select>
+        </mat-form-field>
+        @if (hasError('tipoRequerimiento', 'required')) {
+          <span id="tipo-req-error" class="field-error" role="alert">⚠ Selecciona el tipo de requerimiento</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Arquitectura</mat-label>
+          <mat-select formControlName="arquitectura"
+                      [attr.aria-describedby]="isInvalid('arquitectura') ? 'arq-error' : null">
+            <mat-option value="virtual">Virtual</mat-option>
+            <mat-option value="fisica">Física</mat-option>
+            <mat-option value="hibrida">Híbrida</mat-option>
+            <mat-option value="nube">Nube</mat-option>
+          </mat-select>
+        </mat-form-field>
+        @if (hasError('arquitectura', 'required')) {
+          <span id="arq-error" class="field-error" role="alert">⚠ Selecciona la arquitectura</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Modalidad</mat-label>
+          <mat-select formControlName="modalidad"
+                      [attr.aria-describedby]="isInvalid('modalidad') ? 'modalidad-error' : null">
+            <mat-option value="nuevo">Nuevo</mat-option>
+            <mat-option value="renovacion">Renovación</mat-option>
+          </mat-select>
+        </mat-form-field>
+        @if (hasError('modalidad', 'required')) {
+          <span id="modalidad-error" class="field-error" role="alert">⚠ Selecciona la modalidad</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Sistema operativo</mat-label>
+          <mat-select formControlName="sistemaOperativo"
+                      [attr.aria-describedby]="isInvalid('sistemaOperativo') ? 'so-error' : null">
+            <mat-option value="windows">Windows</mat-option>
+            <mat-option value="linux">Linux</mat-option>
+            <mat-option value="otro">Otro</mat-option>
+          </mat-select>
+        </mat-form-field>
+        @if (hasError('sistemaOperativo', 'required')) {
+          <span id="so-error" class="field-error" role="alert">⚠ Selecciona el sistema operativo</span>
+        }
+      </div>
+
+      @if (sistemaOperativo === 'otro') {
+        <div class="field-wrap">
+          <mat-form-field appearance="outline">
+            <mat-label>Especifica el sistema operativo</mat-label>
+            <input matInput formControlName="sistemaOperativoOtro" autocomplete="off">
+          </mat-form-field>
+        </div>
+      }
+
+    </div>
+  </section>
+
+  <!-- Sección: Datos del servidor existente (solo Renovación) -->
+  @if (esRenovacion) {
+    <hr class="section-divider" aria-hidden="true">
+    <section class="form-section" aria-labelledby="renovacion-heading">
+      <h3 id="renovacion-heading" class="section-title">
+        <span class="section-number">2</span>
+        Servidor existente
+      </h3>
+      <p class="section-desc">Datos del servidor que se va a renovar</p>
+
+      <div [formGroup]="form" class="fields-grid">
+
+        <div class="field-wrap">
+          <mat-form-field appearance="outline">
+            <mat-label>Dirección IP actual</mat-label>
+            <input matInput formControlName="ipActual" autocomplete="off"
+                   placeholder="Ej. 192.168.1.100">
+          </mat-form-field>
+        </div>
+
+        <div class="field-wrap">
+          <mat-form-field appearance="outline">
+            <mat-label>Nombre del servidor actual</mat-label>
+            <input matInput formControlName="nombreServidorActual" autocomplete="off"
+                   placeholder="Ej. SRV-APP-01">
+          </mat-form-field>
+        </div>
+
+        <div class="field-wrap">
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo de renovación</mat-label>
+            <mat-select formControlName="tipoRenovacion">
+              <mat-option value="clonacion">Clonación</mat-option>
+              <mat-option value="serverBase">Server base</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+      </div>
+    </section>
+  }
+
+  <hr class="section-divider" aria-hidden="true">
+
+  <!-- Sección: Recursos de cómputo -->
+  <section class="form-section" aria-labelledby="recursos-heading">
+    <h3 id="recursos-heading" class="section-title">
+      <span class="section-number">{{ esRenovacion ? 3 : 2 }}</span>
+      Recursos de cómputo
+    </h3>
+    <p class="section-desc">Capacidad de procesamiento, memoria y almacenamiento requerida</p>
+
+    @if (esEstandar) {
+      <div class="recursos-estandar-nota" role="note">
+        <mat-icon>lock</mat-icon>
+        Recursos predefinidos para requerimiento estándar. Selecciona <strong>Específico</strong> para personalizarlos.
+      </div>
+    }
+
+    <div [formGroup]="form" class="fields-grid">
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>vCores</mat-label>
+          <input matInput type="number" formControlName="vCores" min="1"
+                 [readonly]="esEstandar"
+                 [attr.aria-describedby]="isInvalid('vCores') ? 'vcores-error' : null"
+                 [attr.aria-invalid]="isInvalid('vCores')">
+          @if (esEstandar) { <mat-hint>Valor estándar: 2</mat-hint> }
+        </mat-form-field>
+        <span id="vcores-error" class="field-error" role="alert">
+          @if (hasError('vCores', 'required')) { ⚠ Ingresa el número de vCores }
+          @else if (hasError('vCores', 'min')) { ⚠ El valor mínimo es 1 vCore }
+        </span>
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Memoria RAM (GB)</mat-label>
+          <input matInput type="number" formControlName="memoriaRam" min="1"
+                 [readonly]="esEstandar"
+                 [attr.aria-describedby]="isInvalid('memoriaRam') ? 'ram-error' : null"
+                 [attr.aria-invalid]="isInvalid('memoriaRam')">
+          @if (esEstandar) { <mat-hint>Valor estándar: 4 GB</mat-hint> }
+        </mat-form-field>
+        <span id="ram-error" class="field-error" role="alert">
+          @if (hasError('memoriaRam', 'required')) { ⚠ Ingresa la memoria RAM requerida }
+          @else if (hasError('memoriaRam', 'min')) { ⚠ El valor mínimo es 1 GB }
+        </span>
+      </div>
+
+    </div>
+
+    <!-- Discos duros -->
+    <div class="discos-header">
+      <span class="discos-label">Discos duros</span>
+      @if (!esEstandar) {
+        <button mat-stroked-button type="button" class="btn-agregar-disco"
+                (click)="agregarDisco()"
+                matTooltip="Agregar otro disco duro">
+          <mat-icon>add</mat-icon> Agregar disco
+        </button>
+      }
+    </div>
+
+    <div class="discos-lista">
+      @for (disco of discosDuros.controls; track $index) {
+        <div [formGroup]="$any(disco)" class="disco-card">
+          <div class="disco-card-header">
+            <span class="disco-index">Disco {{ $index + 1 }}</span>
+            @if (!esEstandar && discosDuros.length > 1) {
+              <button mat-icon-button type="button" class="btn-eliminar-disco"
+                      (click)="eliminarDisco($index)"
+                      matTooltip="Eliminar disco">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            }
+          </div>
+          <div class="disco-fields">
+            <div class="field-wrap">
+              <mat-form-field appearance="outline">
+                <mat-label>Capacidad (GB)</mat-label>
+                <input matInput type="number" formControlName="capacidad" min="1"
+                       [readonly]="esEstandar">
+                @if (esEstandar && $index === 0) { <mat-hint>Valor estándar: 50 GB</mat-hint> }
+              </mat-form-field>
+              <span class="field-error" role="alert">
+                @if (hasDiscoError($index, 'capacidad', 'required')) { ⚠ Ingresa la capacidad }
+                @else if (hasDiscoError($index, 'capacidad', 'min')) { ⚠ El valor mínimo es 1 GB }
+              </span>
+            </div>
+            <div class="field-wrap">
+              <mat-form-field appearance="outline">
+                <mat-label>Tipo</mat-label>
+                <mat-select formControlName="tipo" [disabled]="esEstandar">
+                  <mat-option value="SSD">SSD</mat-option>
+                  <mat-option value="HDD">HDD</mat-option>
+                  <mat-option value="NVMe">NVMe</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="field-wrap">
+              <mat-form-field appearance="outline">
+                <mat-label>Etiqueta / Uso (opcional)</mat-label>
+                <input matInput formControlName="etiqueta" autocomplete="off"
+                       [readonly]="esEstandar"
+                       placeholder="Ej. Sistema operativo, Datos, Respaldo">
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+  </section>
+
+  <hr class="section-divider" aria-hidden="true">
+
+  <!-- Sección: Componentes adicionales -->
+  <section class="form-section" aria-labelledby="adicionales-heading">
+    <h3 id="adicionales-heading" class="section-title">
+      <span class="section-number">{{ esRenovacion ? 4 : 3 }}</span>
+      Componentes adicionales
+    </h3>
+    <p class="section-desc">Servicios opcionales requeridos por la aplicación</p>
+
+    <div [formGroup]="form" class="fields-grid">
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Motor de base de datos</mat-label>
+          <input matInput formControlName="motorBD" autocomplete="off"
+                 placeholder="Ej. MySQL, PostgreSQL">
+        </mat-form-field>
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Puertos</mat-label>
+          <input matInput formControlName="puertos" autocomplete="off"
+                 placeholder="Ej. 80, 443, 8080">
+        </mat-form-field>
+      </div>
+
+      <div class="field-wrap field-full">
+        <mat-form-field appearance="outline">
+          <mat-label>Integraciones</mat-label>
+          <textarea matInput formControlName="integraciones" rows="3" autocomplete="off"
+                    placeholder="Ej. Active Directory, API externa, servicios web"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="field-wrap field-full">
+        <mat-form-field appearance="outline">
+          <mat-label>Otras especificaciones</mat-label>
+          <textarea matInput formControlName="otrasSpecs" rows="3" autocomplete="off"></textarea>
+        </mat-form-field>
+      </div>
+
+    </div>
+  </section>
+
+</div>

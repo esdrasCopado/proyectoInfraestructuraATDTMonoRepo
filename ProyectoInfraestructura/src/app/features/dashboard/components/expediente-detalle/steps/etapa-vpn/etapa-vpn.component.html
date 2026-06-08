@@ -1,0 +1,179 @@
+<!-- Bloque 1 · Datos del servidor (solo lectura) -->
+<details class="bloque" open>
+  <summary class="bloque-summary">
+    <span class="bloque-titulo">
+      <span class="bloque-num">1</span>
+      Datos del servidor
+    </span>
+    <span class="seccion-arrow"></span>
+  </summary>
+  <div class="bloque-body">
+    <p class="bloque-hint">Solo lectura · Servidor al que se asignarán las VPNs.</p>
+    <table class="ref-tabla">
+      <tr>
+        <td class="ref-key">IP asignada</td>
+        <td class="ref-val">{{ ip }}</td>
+      </tr>
+      <tr>
+        <td class="ref-key">Dependencia</td>
+        <td class="ref-val">{{ dependencia }}</td>
+      </tr>
+      <tr>
+        <td class="ref-key">Subdominio{{ subdominios.length !== 1 ? 's' : '' }} solicitado{{ subdominios.length !== 1 ? 's' : '' }}</td>
+        <td class="ref-val">
+          @if (subdominios.length > 0) {
+            @for (sub of subdominios; track sub) {
+              <span class="ref-subdominio">{{ sub }}</span>
+            }
+          } @else {
+            —
+          }
+        </td>
+      </tr>
+    </table>
+  </div>
+</details>
+
+<!-- Bloque 2 · Lista de VPNs -->
+<div class="bloque-vpns">
+
+  <div class="vpns-header">
+    <span class="bloque-titulo">
+      <span class="bloque-num">2</span>
+      VPNs a crear
+    </span>
+    <span class="vpns-progreso"
+          [class.vpns-progreso--ok]="todasConfirmadas">
+      {{ confirmadas }} de {{ total }} confirmada{{ total !== 1 ? 's' : '' }}
+    </span>
+  </div>
+
+  <form [formGroup]="form">
+    <div formArrayName="vpns" class="vpns-lista">
+
+      @for (ctrl of vpnsControls; track $index; let i = $index) {
+        <div class="vpn-card"
+             [class.vpn-card--ok]="ctrl.get('confirmada')?.value"
+             [formGroupName]="i">
+
+          <!-- Cabecera de la tarjeta -->
+          <div class="vpn-card__header">
+            <div class="vpn-card__header-left">
+              @if (ctrl.get('confirmada')?.value) {
+                <span class="badge badge--ok">✓ Creada</span>
+              } @else {
+                <span class="badge badge--pendiente">Pendiente</span>
+              }
+              <span class="vpn-card__num">VPN #{{ i + 1 }}</span>
+            </div>
+            @if (ctrl.get('confirmada')?.value) {
+              <button type="button" class="btn-editar" (click)="editar(i)">Editar</button>
+            }
+          </div>
+
+          <!-- Cuerpo: dos columnas -->
+          <div class="vpn-card__body">
+
+            <!-- Izquierda: datos de la carta (inmutables) -->
+            <div class="vpn-col vpn-col--carta">
+              <p class="vpn-col__titulo">Solicitado en la carta</p>
+
+              @if (vpnRef(i); as vpn) {
+                <div class="dato-row">
+                  <span class="dato-k">Tipo</span>
+                  <span class="dato-v">{{ tipoLabel(vpn.tipoVpn) }}</span>
+                </div>
+                <div class="dato-row">
+                  <span class="dato-k">Responsable</span>
+                  <span class="dato-v">{{ vpn.vpnResponsable || '—' }}</span>
+                </div>
+                <div class="dato-row">
+                  <span class="dato-k">Cargo</span>
+                  <span class="dato-v">{{ vpn.vpnCargo || '—' }}</span>
+                </div>
+                <div class="dato-row">
+                  <span class="dato-k">Empresa</span>
+                  <span class="dato-v">{{ vpn.vpnEmpresa || '—' }}</span>
+                </div>
+                <div class="dato-row">
+                  <span class="dato-k">Teléfono</span>
+                  <span class="dato-v">{{ vpn.vpnTelefono || '—' }}</span>
+                </div>
+                <div class="dato-row">
+                  <span class="dato-k">Vigencia</span>
+                  <span class="dato-v">{{ vigenciaLabel(vpn.vpnVigencia) }}</span>
+                </div>
+              } @else {
+                <p class="sin-carta">VPN adicional · No proviene de la carta original.</p>
+              }
+            </div>
+
+            <!-- Derecha: datos a capturar por el Admin Infraestructura -->
+            <div class="vpn-col vpn-col--asignacion">
+              <p class="vpn-col__titulo">Datos de creación</p>
+
+              @if (!ctrl.get('confirmada')?.value) {
+                <!-- Modo edición -->
+                <div class="campo-group">
+                  <label class="campo-label"
+                         [class.campo-label--error]="ctrl.get('idVpn')?.invalid && ctrl.get('idVpn')?.touched">
+                    Folio / ID VPN <span class="campo-req">*</span>
+                  </label>
+                  <input class="campo-input"
+                         [class.campo-input--error]="ctrl.get('idVpn')?.invalid && ctrl.get('idVpn')?.touched"
+                         formControlName="idVpn"
+                         placeholder="Ej. VPN-2026-001">
+                  @if (ctrl.get('idVpn')?.invalid && ctrl.get('idVpn')?.touched) {
+                    <span class="campo-error">Campo requerido</span>
+                  }
+                </div>
+                <div class="campo-group">
+                  <label class="campo-label">
+                    IP VPN <span class="campo-opt">(opcional)</span>
+                  </label>
+                  <input class="campo-input"
+                         formControlName="ipVpn"
+                         placeholder="Ej. 10.0.0.50">
+                </div>
+              } @else {
+                <!-- Modo lectura -->
+                <div class="dato-row">
+                  <span class="dato-k">Folio / ID VPN</span>
+                  <span class="dato-v dato-v--asignado">{{ ctrl.get('idVpn')?.value }}</span>
+                </div>
+                <div class="dato-row">
+                  <span class="dato-k">IP VPN</span>
+                  <span class="dato-v">{{ ctrl.get('ipVpn')?.value || '—' }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Pie: confirmar (solo cuando está pendiente) -->
+          @if (!ctrl.get('confirmada')?.value) {
+            <div class="vpn-card__footer">
+              <label class="confirm-label"
+                     [class.confirm-label--error]="ctrl.get('confirmada')?.invalid && ctrl.get('confirmada')?.touched">
+                <input type="checkbox"
+                       class="confirm-check"
+                       [checked]="false"
+                       (change)="confirmar(i)">
+                <span class="confirm-text">Confirmar creación de esta VPN</span>
+              </label>
+              @if (ctrl.get('confirmada')?.invalid && ctrl.get('confirmada')?.touched) {
+                <p class="confirm-error">Debes confirmar esta VPN antes de avanzar.</p>
+              }
+            </div>
+          }
+
+        </div>
+      }
+
+    </div>
+  </form>
+
+  <button type="button" class="btn-agregar" (click)="agregarVpn()">
+    + Añadir VPN
+  </button>
+
+</div>

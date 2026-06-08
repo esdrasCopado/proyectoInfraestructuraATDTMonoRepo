@@ -1,0 +1,237 @@
+.step-container {
+  padding-top: 0.5rem;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--primary);
+  border-left: 4px solid var(--secondary);
+  padding-left: 10px;
+  margin: 0 0 4px;
+}
+
+.section-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--secondary);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.section-desc {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 16px 14px;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid #d1d5db;
+  margin: 2rem 0;
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+  align-items: start;
+
+  &--stack {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  &.field-full { grid-column: 1 / -1; }
+
+  mat-form-field { width: 100%; }
+}
+
+.field-error {
+  font-size: 12px;
+  color: #d32f2f;
+  min-height: 16px;
+  line-height: 1.4;
+  padding: 2px 0 4px;
+}
+
+.req-mark {
+  color: #d32f2f;
+  font-weight: 700;
+}
+
+/* ── Subdominios con puerto ── */
+.subdominio-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.subdominio-field {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.puerto-field {
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.add-subdominio-btn {
+  margin-top: 4px;
+  color: var(--primary);
+  border-color: var(--primary);
+  font-size: 13px;
+
+  mat-icon { font-size: 18px; margin-right: 4px; }
+}
+
+/* ── Selector de tipo VPN ── */
+.vpn-tipo-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 16px 0 24px;
+  width: 100%;
+
+  ::ng-deep .mat-button-toggle {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+  }
+
+  ::ng-deep .mat-button-toggle-checked {
+    background-color: var(--primary);
+    color: #fff;
+  }
+}
+
+.vpn-fields {
+  margin-top: 8px;
+}
+
+/* ── Vigencia ── */
+.vigencia-label {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+  margin: 0 0 10px;
+}
+
+.vigencia-group {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+/* ── Lista y tarjetas VPN ── */
+.vpn-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.vpn-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.vpn-card {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.vpn-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.vpn-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.vpn-remove-btn {
+  color: #d32f2f;
+  width: 32px;
+  height: 32px;
+
+  ::ng-deep .mat-icon { font-size: 18px; }
+}
+
+.folio-loading-icon {
+  font-size: 18px;
+  color: #9ca3af;
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.vpn-folio-agregar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: -4px;
+  margin-bottom: 4px;
+
+  .vpn-folio-agregar-msg {
+    font-size: 12px;
+    color: #6b7280;
+  }
+
+  button { font-size: 12px; }
+}
+
+.add-vpn-btn {
+  margin-top: 4px;
+  color: var(--primary);
+  border-color: var(--primary);
+  font-size: 13px;
+
+  mat-icon { font-size: 18px; margin-right: 4px; }
+}
+
+@media (max-width: 600px) {
+  .fields-grid {
+    grid-template-columns: 1fr;
+    .field-full { grid-column: 1; }
+  }
+
+  .vpn-tipo-toggle {
+    flex-direction: column;
+    ::ng-deep .mat-button-toggle { flex: none; }
+  }
+}

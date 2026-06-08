@@ -1,0 +1,26 @@
+# Credenciales y configuración local — NUNCA subir al repositorio
+variables.env
+
+# Archivos subidos por usuarios en tiempo de ejecución
+wwwroot/evidencias/
+
+# Compilación
+bin/
+obj/
+
+# Archivos de usuario de Visual Studio / Rider
+*.user
+*.suo
+.vs/
+.idea/
+
+# Logs
+*.log
+
+# Archivos de base de datos SQLite locales
+*.db
+*.db-shm
+*.db-wal
+
+# Archivos de publicación
+publish/

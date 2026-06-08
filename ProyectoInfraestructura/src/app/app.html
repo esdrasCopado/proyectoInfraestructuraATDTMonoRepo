@@ -1,0 +1,13 @@
+@if (showHeader) {
+  <div class="app-layout">
+    <app-sidebar [collapsed]="sidebarCollapsed" (toggleCollapse)="toggleSidebar()" />
+    <div class="app-main">
+      <app-header />
+      <main class="main-content">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+} @else {
+  <router-outlet></router-outlet>
+}

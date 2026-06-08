@@ -1,0 +1,66 @@
+<div class="reporte-page">
+
+  <div class="reporte-page__header">
+    <div class="reporte-page__titulo">
+      <span class="reporte-page__num">3.2</span>
+      <h1>Comunicaciones y aplicativos por IP</h1>
+    </div>
+    <div class="reporte-page__exports">
+      <button class="btn-export btn-export--excel" (click)="exportar('excel')"><mat-icon>table_view</mat-icon> Excel</button>
+      <button class="btn-export btn-export--pdf" (click)="exportar('pdf')"><mat-icon>picture_as_pdf</mat-icon> PDF</button>
+    </div>
+  </div>
+
+  <div class="reporte-filtros">
+    <mat-form-field appearance="outline" style="width:200px">
+      <mat-label>IP del servidor</mat-label>
+      <input matInput [(ngModel)]="ip" placeholder="10.0.0.1" (keyup.enter)="buscar()">
+    </mat-form-field>
+    <button class="btn-buscar" (click)="buscar()"><mat-icon>search</mat-icon> Buscar</button>
+    <button class="btn-limpiar" (click)="limpiar()"><mat-icon>clear</mat-icon> Limpiar</button>
+  </div>
+
+  <div class="reporte-tabla-wrap">
+    <table class="reporte-tabla">
+      <thead>
+        <tr>
+          <th>Folio de solicitud</th>
+          <th>Sector</th>
+          <th>Dependencia</th>
+          <th>Responsable del servidor</th>
+          <th>Contacto Responsable</th>
+          <th>Estatus</th>
+          <th>IP del servidor</th>
+          <th>Subdominios aprobados</th>
+          <th>Tipo de despliegue</th>
+          <th>Puertos solicitados</th>
+          <th>Reglas de firewall</th>
+          <th>Integraciones externas</th>
+          <th>Otras</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of datos; track r.folioSolicitud) {
+          <tr>
+            <td class="td-folio">{{ r.folioSolicitud }}</td>
+            <td>{{ r.sector }}</td>
+            <td>{{ r.dependencia }}</td>
+            <td>{{ r.responsableServidor }}</td>
+            <td>{{ r.contactoResponsable }}</td>
+            <td><span class="estatus-badge {{ r.estatusProcesamieto | estatusBadge }}">{{ r.estatusProcesamieto }}</span></td>
+            <td>{{ r.ipServidor }}</td>
+            <td>{{ r.subdominiosAprobados.join(', ') }}</td>
+            <td>{{ r.tipoDespliegue }}</td>
+            <td>{{ r.puertosSolicitados.join(', ') }}</td>
+            <td>{{ r.reglasFirewall }}</td>
+            <td>{{ r.integracionesExternas }}</td>
+            <td>{{ r.otras }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="13" class="td-empty">Ingrese una IP y presione Buscar</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+</div>

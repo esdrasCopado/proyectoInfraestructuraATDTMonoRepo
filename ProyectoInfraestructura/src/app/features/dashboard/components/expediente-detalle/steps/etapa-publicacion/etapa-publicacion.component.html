@@ -1,0 +1,41 @@
+<!-- Contexto del servidor -->
+<div class="bloque">
+  <p class="bloque-titulo">Servidor listo para publicación</p>
+  <p class="bloque-hint">
+    Las evidencias de funcionamiento fueron aprobadas. Al solicitar la publicación,
+    el Administrador de Vulnerabilidades realizará el análisis de seguridad final.
+    Recibirás una notificación con el resultado.
+  </p>
+  <table class="ref-tabla">
+    <tr><td class="ref-key">Servidor</td>    <td class="ref-val">{{ nombreServidor }}</td></tr>
+    <tr><td class="ref-key">Dependencia</td> <td class="ref-val">{{ dependencia }}</td></tr>
+    <tr><td class="ref-key">IP asignada</td> <td class="ref-val">{{ ip }}</td></tr>
+    <tr><td class="ref-key">Subdominio(s)</td><td class="ref-val">{{ subdominios }}</td></tr>
+    <tr><td class="ref-key">VPN</td>          <td class="ref-val">{{ vpnFolio }}</td></tr>
+    <tr>
+      <td class="ref-key">Evidencias (Etapa 12)</td>
+      <td class="ref-val">
+        <span [class.estado-ok]="etapa12Completada">
+          {{ etapa12Completada ? '✓ Aprobadas' : 'Pendiente' }}
+        </span>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<!-- Confirmación -->
+<div class="bloque bloque-confirm">
+  <form [formGroup]="form">
+    <label class="confirm-label"
+           [class.confirm-label--error]="confirmadoInvalido">
+      <input type="checkbox" class="confirm-check" formControlName="confirmado">
+      <span class="confirm-text">
+        Solicito la publicación del servidor y acepto que se procederá con el análisis
+        de vulnerabilidades antes de habilitar el acceso público.
+      </span>
+    </label>
+    @if (confirmadoInvalido) {
+      <p class="confirm-error">Debes marcar la solicitud de publicación para continuar.</p>
+    }
+  </form>
+</div>

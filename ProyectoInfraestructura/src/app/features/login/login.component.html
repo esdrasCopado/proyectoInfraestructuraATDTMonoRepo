@@ -1,0 +1,75 @@
+<section class="login">
+  <div class="background">
+    <div class="mask"></div>
+  </div>
+  <div class="pattern">
+  </div>
+  <div class="info">
+    <div class="logos">
+      <img src="/SonoraLogo.png" />
+      <img src="/logo-transformacion-digital-white.svg" />
+      <img src="/SEGOBLogo.png" />
+    </div>
+
+    <h3>Sistema de Administración de Infraestructura</h3>
+
+    <h6>
+      El <strong>Sistema de Administración de Infraestructura</strong> es una herramienta
+      institucional que permite la gestión centralizada de los recursos virtuales del centro
+      de datos del Gobierno del Estado. A través de este sistema se realiza la captura,
+      seguimiento y control de las solicitudes de aprovisionamiento requeridas por las
+      dependencias, facilitando una administración eficiente, ordenada y oportuna de los
+      servidores virtuales.
+    </h6>
+
+    <p>
+      Centro de Gobierno, Edif. Sonora, Comonfort y Paseo Río Sonora, Primer Piso Ala Sur.
+      C.P. 83280. Teléfono: (662) 319 37 87 y (662) 319 37 86. Hermosillo, Sonora.
+    </p>
+  </div>
+
+  <div class="form">
+    <div class="container">
+      <img src="/IconInicio.svg" />
+
+      <h3>INICIO DE SESIÓN</h3>
+
+      <form (ngSubmit)="iniciarSesion()">
+        <div class="contenedor">
+          <div class="input-group">
+            <input
+              [(ngModel)]="correo"
+              type="text"
+              id="correo"
+              name="correo"
+              required
+            />
+            <label for="correo">Correo electrónico</label>
+          </div>
+
+          <div class="input-group">
+            <input
+              [(ngModel)]="password"
+              type="password"
+              id="contrasena"
+              name="password"
+              required
+            />
+            <label for="contrasena">Contraseña</label>
+          </div>
+
+          <div class="link">
+            <a (click)="recuperarContrasena()"
+              ><u>¿Olvidaste tu contraseña?</u></a
+            >
+          </div>
+        </div>
+
+        <button type="submit">Iniciar sesión</button>
+      </form>
+    </div>
+  </div>
+
+  <app-modal></app-modal>
+  <app-recuperar-modal></app-recuperar-modal>
+</section>

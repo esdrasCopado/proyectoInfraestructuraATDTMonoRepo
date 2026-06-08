@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Carta Responsiva - Solicitud de Servidor</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .form-section { margin: 20px 0; padding: 16px; border: 1px solid #e6e6e6; border-radius:6px; background:#fff; }
+    .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    label{ font-weight:600; display:block; margin-bottom:6px; }
+    .full{ grid-column: 1 / -1; }
+    .actions{ text-align:right; margin-top:12px }
+    .small{ font-size:0.9em; color:#555 }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Carta Responsiva - Solicitud de Servidor</h1>
+    <p class="small">Complete los apartados y haga click en <strong>Enviar</strong> para crear la solicitud. Puede descargar o imprimir el formulario desde el navegador.</p>
+
+    <form id="cartaForm">
+
+      <section class="form-section">
+        <h2>Apartado 1. Datos de contacto y Ente Solicitante</h2>
+        <div class="form-grid">
+          <div>
+            <label for="sector">Sector</label>
+            <input id="sector" name="sector" type="text">
+          </div>
+          <div>
+            <label for="dependencia">Dependencia</label>
+            <input id="dependencia" name="dependencia" type="text">
+          </div>
+          <div>
+            <label for="responsable">Responsable</label>
+            <input id="responsable" name="responsable" type="text">
+          </div>
+          <div>
+            <label for="cargo">Cargo</label>
+            <input id="cargo" name="cargo" type="text">
+          </div>
+          <div>
+            <label for="telefono">Teléfono de contacto</label>
+            <input id="telefono" name="telefono" type="text">
+          </div>
+          <div>
+            <label for="correo">Correo Electrónico</label>
+            <input id="correo" name="correo" type="email">
+          </div>
+        </div>
+
+        <h3>Administrador del servidor asignado</h3>
+        <div class="form-grid">
+          <div>
+            <label for="proveedor">Proveedor</label>
+            <input id="proveedor" name="proveedor" type="text">
+          </div>
+          <div>
+            <label for="depAdmin">Dependencia</label>
+            <input id="depAdmin" name="depAdmin" type="text">
+          </div>
+          <div>
+            <label for="adminServidor">Administrador del servidor</label>
+            <input id="adminServidor" name="adminServidor" type="text">
+          </div>
+          <div>
+            <label for="cargoAdmin">Cargo</label>
+            <input id="cargoAdmin" name="cargoAdmin" type="text">
+          </div>
+          <div>
+            <label for="telefonoAdmin">Teléfono de contacto</label>
+            <input id="telefonoAdmin" name="telefonoAdmin" type="text">
+          </div>
+          <div>
+            <label for="correoAdmin">Correo Electrónico</label>
+            <input id="correoAdmin" name="correoAdmin" type="email">
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Apartado 2. Descripción General del Requerimiento</h2>
+        <div class="form-grid">
+          <div class="full">
+            <label for="descripcion">Descripción del Servidor (Uso principal)</label>
+            <textarea id="descripcion" name="descripcion" rows="3"></textarea>
+          </div>
+          <div>
+            <label for="nombreServidor">Nombre Propuesto del Servidor</label>
+            <input id="nombreServidor" name="nombreServidor" type="text">
+          </div>
+          <div>
+            <label for="fechaArranque">Fecha deseada de arranque</label>
+            <input id="fechaArranque" name="fechaArranque" type="date">
+          </div>
+          <div>
+            <label>Tipo de uso</label>
+            <label><input name="uso" value="interno" type="radio"> Uso Interno</label>
+            <label><input name="uso" value="publicado" type="radio"> Servidor Publicado</label>
+          </div>
+          <div class="full">
+            <label for="caracteristicas">Características especiales</label>
+            <input id="caracteristicas" name="caracteristicas" type="text">
+          </div>
+          <div>
+            <label for="vigencia">Vigencia del requerimiento</label>
+            <input id="vigencia" name="vigencia" type="text">
+          </div>
+          <div>
+            <label for="nombreApp">Nombre de la Aplicación</label>
+            <input id="nombreApp" name="nombreApp" type="text">
+          </div>
+        </div>
+
+        <div class="full" style="margin-top:12px">
+          <label>Anexo (servidores adicionales)</label>
+          <div id="anexoList"></div>
+          <button type="button" id="addServer">Añadir servidor adicional</button>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Apartado 3. Especificaciones Técnicas</h2>
+        <div class="form-grid">
+          <div>
+            <label for="tipoReq">Tipo de Requerimiento</label>
+            <select id="tipoReq" name="tipoReq">
+              <option value="estandar">Requerimiento Estándar</option>
+              <option value="especifico">Requerimiento Especifico</option>
+            </select>
+          </div>
+          <div>
+            <label for="sistemaOp">Sistema Operativo</label>
+            <select id="sistemaOp" name="sistemaOp">
+              <option>Windows Server</option>
+              <option>Linux Ubuntu</option>
+            </select>
+          </div>
+          <div>
+            <label for="cores">Procesamiento (Cores)</label>
+            <input id="cores" name="cores" type="number" min="1" value="2">
+          </div>
+          <div>
+            <label for="ram">Memoria (GB)</label>
+            <input id="ram" name="ram" type="number" min="1" value="4">
+          </div>
+          <div class="full">
+            <label for="storage">Espacio de Almacenamiento (GB)</label>
+            <input id="storage" name="storage" type="number" min="1" value="50">
+          </div>
+          <div class="full">
+            <label for="dbMotor">Motor de Base de datos a Utilizar</label>
+            <input id="dbMotor" name="dbMotor" type="text">
+          </div>
+          <div class="full">
+            <label for="firewall">Reglas de Firewall / Puertos</label>
+            <textarea id="firewall" name="firewall" rows="2"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Apartado 4. Infraestructura</h2>
+        <div class="form-grid">
+          <div>
+            <label for="ipServidor">IP Servidor</label>
+            <input id="ipServidor" name="ipServidor" type="text">
+          </div>
+          <div>
+            <label for="subdominio">Subdominio solicitado</label>
+            <input id="subdominio" name="subdominio" type="text">
+          </div>
+          <div>
+            <label for="puerto">Puerto Específico a Utilizar</label>
+            <input id="puerto" name="puerto" type="text">
+          </div>
+          <div>
+            <label for="ssl">Requiere certificado SSL</label>
+            <select id="ssl" name="ssl"><option value="no">No</option><option value="si">Sí</option></select>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2>Apartado 6. Responsiva</h2>
+        <div class="form-grid">
+          <div>
+            <label for="nombreResponsiva">Nombre</label>
+            <input id="nombreResponsiva" name="nombreResponsiva" type="text">
+          </div>
+          <div>
+            <label for="numEmpleado">Número de empleado</label>
+            <input id="numEmpleado" name="numEmpleado" type="text">
+          </div>
+          <div>
+            <label for="puestoResp">Puesto</label>
+            <input id="puestoResp" name="puestoResp" type="text">
+          </div>
+        </div>
+        <div class="actions">
+          <button type="button" id="submitBtn">Enviar solicitud</button>
+        </div>
+      </section>
+
+    </form>
+  </main>
+
+  <script>
+    const anexoList = document.getElementById('anexoList');
+    document.getElementById('addServer').addEventListener('click', ()=>{
+      const idx = anexoList.children.length+1;
+      const div = document.createElement('div');
+      div.className = 'form-section';
+      div.innerHTML = `<h4>Servidor ${idx}</h4>
+        <label>Descripción de uso</label>
+        <input name="anexo_desc_${idx}" type="text">
+        <label>Nombre Propuesto</label>
+        <input name="anexo_name_${idx}" type="text">
+        <label>Fecha deseada de arranque</label>
+        <input name="anexo_fecha_${idx}" type="date">
+        <label>Sistema Operativo</label>
+        <input name="anexo_os_${idx}" type="text">
+        <label>Cores</label>
+        <input name="anexo_cores_${idx}" type="number" value="2">
+        <label>RAM (GB)</label>
+        <input name="anexo_ram_${idx}" type="number" value="4">
+        <label>Almacenamiento (GB)</label>
+        <input name="anexo_storage_${idx}" type="number" value="50">`;
+      anexoList.appendChild(div);
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', async ()=>{
+      const form = document.getElementById('cartaForm');
+      const fd = new FormData(form);
+      const anexos = [];
+      for(let i=0;i<anexoList.children.length;i++){
+        const idx = i+1;
+        const nombre = fd.get(`anexo_name_${idx}`) || '';
+        const descripcion = fd.get(`anexo_desc_${idx}`) || '';
+        if(nombre || descripcion){
+          anexos.push(`${nombre} (${descripcion})`);
+        }
+      }
+
+      const data = {
+        areaRequirente: {
+          sector: fd.get('sector') || 'Gobierno',
+          dependencia: fd.get('dependencia') || '',
+          responsable: fd.get('responsable') || '',
+          cargo: fd.get('cargo') || '',
+          telefono: fd.get('telefono') || '(644) 000-0000',
+          correo: fd.get('correo') || ''
+        },
+        adminServidor: {
+          proveedor: fd.get('proveedor') || 'Centro de Datos',
+          dependencia: fd.get('depAdmin') || '',
+          responsable: fd.get('adminServidor') || '',
+          cargo: fd.get('cargoAdmin') || '',
+          telefono: fd.get('telefonoAdmin') || '(644) 000-0000',
+          correo: fd.get('correoAdmin') || ''
+        },
+        descripcion: {
+          descripcionServidor: fd.get('descripcion') || '',
+          nombreServidor: fd.get('nombreServidor') || '',
+          nombreAplicacion: fd.get('nombreApp') || '',
+          tipoUso: fd.get('uso') || 'interno',
+          fechaArranque: fd.get('fechaArranque') || '',
+          vigencia: fd.get('vigencia') || '12 meses',
+          caracteristicasEspeciales: [fd.get('caracteristicas') || '', anexos.join(' | ')].filter(Boolean).join(' | ')
+        },
+        specs: {
+          tipoRequerimiento: fd.get('tipoReq') || 'estandar',
+          modalidad: 'nuevo',
+          sistemaOperativo: /linux/i.test(fd.get('sistemaOp') || '') ? 'linux' : 'windows',
+          sistemaOperativoOtro: fd.get('sistemaOp') || '',
+          vCores: Number(fd.get('cores') || 2),
+          memoriaRam: Number(fd.get('ram') || 4),
+          almacenamiento: Number(fd.get('storage') || 50),
+          motorBD: fd.get('dbMotor') || '',
+          puertos: fd.get('firewall') || '',
+          integraciones: anexos.join(', ')
+        },
+        infraestructura: {
+          subdominioSolicitado: fd.get('subdominio') || '',
+          puerto: fd.get('puerto') || '',
+          requiereSSL: fd.get('ssl') === 'si',
+          vpnResponsable: fd.get('adminServidor') || fd.get('responsable') || 'Pendiente',
+          vpnCargo: fd.get('cargoAdmin') || fd.get('cargo') || 'Pendiente',
+          vpnTelefono: fd.get('telefonoAdmin') || fd.get('telefono') || '(644) 000-0000',
+          vpnCorreo: fd.get('correoAdmin') || fd.get('correo') || ''
+        },
+        responsiva: {
+          firmante: fd.get('nombreResponsiva') || fd.get('responsable') || '',
+          numEmpleado: fd.get('numEmpleado') || 'N/D',
+          puestoFirmante: fd.get('puestoResp') || '',
+          aceptaTerminos: true
+        }
+      };
+
+      try{
+        const resp = await fetch('/api/cartas', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(data)
+        });
+        const payload = await resp.json();
+        if(resp.ok){
+          alert(`Solicitud enviada correctamente. Folio: ${payload.folio}`);
+          if (payload.cartaId) {
+            window.open(`/api/cartas/${payload.cartaId}/pdf`, '_blank');
+          }
+          window.location.href = '/';
+        } else {
+          alert('Error al enviar solicitud: '+(payload.message || resp.status));
+        }
+      }catch(e){
+        alert('Error de red: '+e.message);
+      }
+    });
+  </script>
+</body>
+</html>

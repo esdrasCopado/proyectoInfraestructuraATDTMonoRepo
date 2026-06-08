@@ -1,0 +1,198 @@
+<div class="step-container">
+
+  <!-- Sección: Área requirente -->
+  <section class="form-section" aria-labelledby="area-heading">
+    <h3 id="area-heading" class="section-title">
+      <span class="section-number">1</span>
+      Área requirente
+    </h3>
+    <p class="section-desc">Datos del servidor público responsable de la solicitud</p>
+
+    <div [formGroup]="area" class="fields-grid">
+
+      <div class="field-wrap field-full">
+        <mat-form-field appearance="outline">
+          <mat-label>Dependencia</mat-label>
+          <input matInput formControlName="dependencia"
+                 autocomplete="organization"
+                 [attr.aria-describedby]="isInvalid(area, 'dependencia') ? 'dependencia-area-error' : null"
+                 [attr.aria-invalid]="isInvalid(area, 'dependencia')">
+        </mat-form-field>
+        @if (hasError(area, 'dependencia', 'required')) {
+          <span id="dependencia-area-error" class="field-error" role="alert">⚠ Ingresa el nombre de la dependencia</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Sector</mat-label>
+          <input matInput formControlName="sector"
+                 autocomplete="on"
+                 [attr.aria-describedby]="isInvalid(area, 'sector') ? 'sector-error' : null"
+                 [attr.aria-invalid]="isInvalid(area, 'sector')">
+        </mat-form-field>
+        @if (hasError(area, 'sector', 'required')) {
+          <span id="sector-error" class="field-error" role="alert">⚠ Ingresa el sector correspondiente</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Responsable</mat-label>
+          <input matInput formControlName="responsable"
+                 autocomplete="name"
+                 [attr.aria-describedby]="isInvalid(area, 'responsable') ? 'responsable-area-error' : null"
+                 [attr.aria-invalid]="isInvalid(area, 'responsable')">
+        </mat-form-field>
+        @if (hasError(area, 'responsable', 'required')) {
+          <span id="responsable-area-error" class="field-error" role="alert">⚠ Ingresa el nombre del responsable</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Cargo</mat-label>
+          <input matInput formControlName="cargo"
+                 autocomplete="organization-title"
+                 [attr.aria-describedby]="isInvalid(area, 'cargo') ? 'cargo-area-error' : null"
+                 [attr.aria-invalid]="isInvalid(area, 'cargo')">
+        </mat-form-field>
+        @if (hasError(area, 'cargo', 'required')) {
+          <span id="cargo-area-error" class="field-error" role="alert">⚠ Ingresa el cargo del responsable</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Teléfono de contacto</mat-label>
+          <input matInput formControlName="telefono"
+                 appPhoneMask
+                 type="tel"
+                 placeholder="(333) 333-3333"
+                 autocomplete="tel"
+                 [attr.aria-describedby]="isInvalid(area, 'telefono') ? 'telefono-area-error' : null"
+                 [attr.aria-invalid]="isInvalid(area, 'telefono')">
+        </mat-form-field>
+        <span id="telefono-area-error" class="field-error" role="alert">
+          @if (hasError(area, 'telefono', 'required')) { ⚠ Ingresa el teléfono de contacto }
+          @else if (hasError(area, 'telefono', 'pattern')) { ⚠ Formato requerido: (XXX) XXX-XXXX }
+        </span>
+      </div>
+
+      <div class="field-wrap field-full">
+        <mat-form-field appearance="outline">
+          <mat-label>Correo electrónico</mat-label>
+          <input matInput formControlName="correo"
+                 type="email"
+                 autocomplete="email"
+                 [attr.aria-describedby]="isInvalid(area, 'correo') ? 'correo-area-error' : null"
+                 [attr.aria-invalid]="isInvalid(area, 'correo')">
+        </mat-form-field>
+        <span id="correo-area-error" class="field-error" role="alert">
+          @if (hasError(area, 'correo', 'required')) { ⚠ Ingresa el correo electrónico }
+          @else if (hasError(area, 'correo', 'email')) { ⚠ El correo no tiene un formato válido }
+        </span>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="section-divider" aria-hidden="true">
+
+  <!-- Sección: Administrador del servidor -->
+  <section class="form-section" aria-labelledby="admin-heading">
+    <h3 id="admin-heading" class="section-title">
+      <span class="section-number">2</span>
+      Administrador del servidor
+    </h3>
+    <p class="section-desc">Datos del responsable técnico asignado al proyecto</p>
+
+    <div [formGroup]="admin" class="fields-grid">
+
+      <div class="field-wrap field-full">
+        <mat-form-field appearance="outline">
+          <mat-label>Proveedor</mat-label>
+          <input matInput formControlName="proveedor"
+                 [attr.aria-describedby]="isInvalid(admin, 'proveedor') ? 'proveedor-error' : null"
+                 [attr.aria-invalid]="isInvalid(admin, 'proveedor')">
+        </mat-form-field>
+        @if (hasError(admin, 'proveedor', 'required')) {
+          <span id="proveedor-error" class="field-error" role="alert">⚠ Ingresa el nombre del proveedor</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Dependencia</mat-label>
+          <input matInput formControlName="dependencia"
+                 autocomplete="organization"
+                 [attr.aria-describedby]="isInvalid(admin, 'dependencia') ? 'dependencia-admin-error' : null"
+                 [attr.aria-invalid]="isInvalid(admin, 'dependencia')">
+        </mat-form-field>
+        @if (hasError(admin, 'dependencia', 'required')) {
+          <span id="dependencia-admin-error" class="field-error" role="alert">⚠ Ingresa el nombre de la dependencia</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Administrador del servidor</mat-label>
+          <input matInput formControlName="responsable"
+                 autocomplete="name"
+                 [attr.aria-describedby]="isInvalid(admin, 'responsable') ? 'responsable-admin-error' : null"
+                 [attr.aria-invalid]="isInvalid(admin, 'responsable')">
+        </mat-form-field>
+        @if (hasError(admin, 'responsable', 'required')) {
+          <span id="responsable-admin-error" class="field-error" role="alert">⚠ Ingresa el nombre del administrador</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Cargo</mat-label>
+          <input matInput formControlName="cargo"
+                 autocomplete="organization-title"
+                 [attr.aria-describedby]="isInvalid(admin, 'cargo') ? 'cargo-admin-error' : null"
+                 [attr.aria-invalid]="isInvalid(admin, 'cargo')">
+        </mat-form-field>
+        @if (hasError(admin, 'cargo', 'required')) {
+          <span id="cargo-admin-error" class="field-error" role="alert">⚠ Ingresa el cargo del administrador</span>
+        }
+      </div>
+
+      <div class="field-wrap">
+        <mat-form-field appearance="outline">
+          <mat-label>Teléfono de contacto</mat-label>
+          <input matInput formControlName="telefono"
+                 appPhoneMask
+                 type="tel"
+                 placeholder="(333) 333-3333"
+                 autocomplete="tel"
+                 [attr.aria-describedby]="isInvalid(admin, 'telefono') ? 'telefono-admin-error' : null"
+                 [attr.aria-invalid]="isInvalid(admin, 'telefono')">
+        </mat-form-field>
+        <span id="telefono-admin-error" class="field-error" role="alert">
+          @if (hasError(admin, 'telefono', 'required')) { ⚠ Ingresa el teléfono de contacto }
+          @else if (hasError(admin, 'telefono', 'pattern')) { ⚠ Formato requerido: (XXX) XXX-XXXX }
+        </span>
+      </div>
+
+      <div class="field-wrap field-full">
+        <mat-form-field appearance="outline">
+          <mat-label>Correo electrónico</mat-label>
+          <input matInput formControlName="correo"
+                 type="email"
+                 autocomplete="email"
+                 [attr.aria-describedby]="isInvalid(admin, 'correo') ? 'correo-admin-error' : null"
+                 [attr.aria-invalid]="isInvalid(admin, 'correo')">
+        </mat-form-field>
+        <span id="correo-admin-error" class="field-error" role="alert">
+          @if (hasError(admin, 'correo', 'required')) { ⚠ Ingresa el correo electrónico }
+          @else if (hasError(admin, 'correo', 'email')) { ⚠ El correo no tiene un formato válido }
+        </span>
+      </div>
+
+    </div>
+  </section>
+
+</div>

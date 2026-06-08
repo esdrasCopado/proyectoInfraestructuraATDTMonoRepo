@@ -1,0 +1,131 @@
+<!-- Historial de evidencias rechazadas (colapsable) -->
+@if (historicoRechazadas.length > 0) {
+  <details class="bloque bloque-historial">
+    <summary class="historial-summary">
+      <span class="historial-titulo">Evidencias rechazadas en rondas anteriores</span>
+      <span class="historial-badge">{{ historicoRechazadas.length }}</span>
+    </summary>
+    <p class="bloque-hint">Reemplaza o corrige las evidencias indicadas a continuación.</p>
+    <ul class="archivos-lista">
+      @for (f of historicoRechazadas; track f.id) {
+        <li class="archivo-item archivo-item--rechazado">
+          <div class="archivo-info">
+            <span class="archivo-nombre">{{ getDisplayName(f.archivoNombre) }}</span>
+            @if (f.motivoRechazo) {
+              <p class="archivo-motivo">{{ f.motivoRechazo }}</p>
+            }
+          </div>
+          <span class="archivo-fecha">{{ f.deletedAt | date:'dd/MM/yy' }}</span>
+        </li>
+      }
+    </ul>
+  </details>
+}
+
+<!-- Evidencias pendientes de revisión -->
+@if (evidenciasPendientes.length > 0) {
+  <div class="bloque">
+    <p class="bloque-titulo">Evidencias en revisión</p>
+    <p class="bloque-hint">Estas evidencias ya fueron cargadas y están pendientes de validación.</p>
+    <ul class="archivos-lista">
+      @for (f of evidenciasPendientes; track f.id) {
+        <li class="archivo-item">
+          <div class="archivo-info">
+            <span class="archivo-nombre">{{ getDisplayName(f.archivoNombre) }}</span>
+            <span class="archivo-meta">{{ f.subidoPor.nombreCompleto }} · {{ f.uploadedAt | date:'dd/MM/yy HH:mm' }}</span>
+          </div>
+          <span class="archivo-estado archivo-estado--{{ f.estadoValidacion }}">{{ f.estadoValidacion }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+}
+
+<!-- Banner de revisión (visible tras rechazo) -->
+@if (esRevision) {
+  <div class="banner-revision">
+    <span class="banner-icon">⚠</span>
+    <div>
+      <p class="banner-titulo">
+        {{ iteracion > 1 ? 'Revisión ' + iteracion : 'Carga secundaria de evidencias' }}
+      </p>
+      @if (motivoRechazoAnterior) {
+        <p class="banner-motivo">Motivo del rechazo anterior: <em>{{ motivoRechazoAnterior }}</em></p>
+      }
+      <p class="banner-desc">Carga las evidencias corregidas o adicionales y confirma de nuevo.</p>
+    </div>
+  </div>
+}
+
+<!-- Contexto -->
+<div class="bloque">
+  <p class="bloque-titulo">{{ nombreServidor }}</p>
+  <p class="bloque-hint">{{ dependencia }}</p>
+</div>
+
+<!-- Zona de carga -->
+<div class="bloque">
+  <p class="bloque-titulo">Evidencias de pruebas de funcionamiento</p>
+  <p class="bloque-hint">Solo archivos PDF · máx. 30 MB por archivo. Puedes cargar múltiples.</p>
+
+  <input #fileInput
+         type="file"
+         accept=".pdf,application/pdf"
+         multiple
+         style="display:none"
+         (change)="onFilesSelected($event)">
+
+  <div class="drop-zone"
+       [class.drop-zone--over]="arrastrando"
+       [class.drop-zone--error]="errorArchivos"
+       (click)="abrirSelector()"
+       (dragover)="onDragover($event)"
+       (dragleave)="onDragleave()"
+       (drop)="onDrop($event)">
+    <span class="drop-icon">📎</span>
+    <span class="drop-text">Arrastra PDFs aquí o haz clic para seleccionar</span>
+  </div>
+
+  @if (errorArchivos) {
+    <p class="upload-error">Debes cargar al menos un archivo PDF antes de avanzar.</p>
+  }
+
+  @for (e of erroresTamano; track e) {
+    <p class="upload-error">{{ e }}</p>
+  }
+
+  <!-- Lista de archivos -->
+  @if (archivos.length > 0) {
+    <ul class="archivos-lista">
+      @for (f of archivos; track f.name; let i = $index) {
+        <li class="archivo-item">
+          <span class="archivo-icon">📄</span>
+          <span class="archivo-nombre">{{ f.name }}</span>
+          <span class="archivo-size">{{ formatSize(f.size) }}</span>
+          <button type="button" class="btn-eliminar" (click)="eliminar(i)">✕</button>
+        </li>
+      }
+    </ul>
+
+    <button type="button" class="btn-agregar-mas" (click)="abrirSelector()">
+      + Añadir más evidencias
+    </button>
+  }
+</div>
+
+<!-- Confirmación -->
+<div class="bloque bloque-confirm">
+  <form [formGroup]="form">
+    <label class="confirm-label"
+           [class.confirm-label--error]="confirmadoInvalido">
+      <input type="checkbox" class="confirm-check" formControlName="confirmado">
+      <span class="confirm-text">
+        Confirmo que las pruebas de funcionamiento se realizaron correctamente
+        y las evidencias son representativas de los resultados.
+      </span>
+    </label>
+    @if (confirmadoInvalido) {
+      <p class="confirm-error">Debes confirmar antes de avanzar.</p>
+    }
+  </form>
+</div>

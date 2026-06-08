@@ -1,0 +1,119 @@
+.dashboard-container {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.metricas-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.metrica-card {
+  background: #f4f4f4;
+  border-radius: 8px;
+  padding: 1rem;
+
+  .metrica-label { font-size: 12px; color: #6b7280; display: block; margin-bottom: 6px; }
+  .metrica-valor { font-size: 28px; font-weight: 500; }
+
+  &.info    .metrica-valor { color: #1976d2; }
+  &.warning .metrica-valor { color: #f59e0b; }
+  &.success .metrica-valor { color: #388e3c; }
+}
+
+.filtros {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+
+  .filtro-busqueda { flex: 1; min-width: 220px; }
+  mat-form-field { min-width: 160px; }
+}
+
+.leyenda {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+
+  .leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #6b7280;
+  }
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+
+  &.dot-done    { background: #639922; }
+  &.dot-active  { background: #378ADD; }
+  &.dot-waiting { background: #D4537E; }
+  &.dot-pending { background: #D3D1C7; }
+}
+
+.etapas {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.etapa-actual {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.folio { font-weight: 500; color: #1976d2; font-size: 12px; }
+.servidor { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.fecha { font-size: 12px; color: #6b7280; }
+
+.badge {
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 500;
+
+  &.badge-en-progreso  { background: #E6F1FB; color: #0C447C; }
+  &.badge-pendiente    { background: #FBEAF0; color: #72243E; }
+  &.badge-completada   { background: #EAF3DE; color: #27500A; }
+}
+
+.tabla-wrapper { border: 0.5px solid #e5e7eb; border-radius: 12px; overflow: hidden; }
+.fila-clickeable { cursor: pointer; &:hover td { background: #f9fafb; } }
+
+.estado-carga {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 2rem;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.estado-error {
+  padding: 1.5rem;
+  color: #d32f2f;
+  font-size: 14px;
+}
+
+.sin-resultados {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-size: 14px;
+}

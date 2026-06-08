@@ -1,0 +1,58 @@
+:host { display: flex; flex-direction: column; gap: 8px; }
+
+.bloque {
+  background: #fff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
+}
+
+.bloque-titulo {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  margin: 0 0 4px;
+}
+
+.bloque-hint {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.ref-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  .ref-key { color: #6b7280; padding: 4px 0; width: 45%; }
+  .ref-val { text-align: right; padding: 4px 0; color: #374151; font-weight: 500; }
+}
+
+.confirm-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:has(.confirm-check:checked) { border-color: #16a34a; background: #f0fdf4; }
+  &--error { border-color: #ef4444; background: #fef2f2; }
+}
+
+.confirm-check {
+  margin-top: 2px;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  accent-color: #16a34a;
+  cursor: pointer;
+}
+
+.confirm-text { font-size: 13px; color: #374151; line-height: 1.4; }
+
+.confirm-error { font-size: 12px; color: #dc2626; margin: 6px 0 0 2px; }

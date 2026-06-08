@@ -1,0 +1,197 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// ── Bloques ───────────────────────────────────────────────────────────────────
+
+.bloque {
+  background: #fff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
+}
+
+.bloque-summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &::-webkit-details-marker { display: none; }
+
+  .seccion-arrow::before { content: '▶'; font-size: 11px; color: #9ca3af; }
+}
+
+details.bloque[open] .seccion-arrow::before { content: '▼'; }
+
+.bloque-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.bloque-titulo-plain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  margin: 0 0 4px;
+}
+
+.bloque-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f4f4f4;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.bloque-opcional {
+  font-size: 12px;
+  font-weight: 400;
+  color: #9ca3af;
+  margin-left: 2px;
+}
+
+.bloque-hint {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 6px 0 12px;
+  line-height: 1.5;
+}
+
+.bloque-body {
+  padding: 8px 0 4px;
+}
+
+.bloque-form {
+  padding-bottom: 1rem;
+}
+
+// ── Tabla de referencia (solo lectura) ───────────────────────────────────────
+
+.ref-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  .ref-key {
+    color: #6b7280;
+    padding: 4px 0;
+    width: 50%;
+  }
+
+  .ref-val {
+    text-align: right;
+    padding: 4px 0;
+    color: #374151;
+    font-weight: 500;
+  }
+}
+
+.sin-datos {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+// ── Formulario de asignación ─────────────────────────────────────────────────
+
+.asignacion-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px 16px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.campo-wrap {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1.5px solid transparent;
+  transition: border-color 0.15s;
+
+  &.campo-mod {
+    border-color: #f97316;
+    background: #fff7ed;
+  }
+
+  &.campo-error {
+    border-color: #ef4444;
+    background: #fef2f2;
+  }
+
+  &.campo-readonly {
+    background: #f9fafb;
+    border-color: #e5e7eb;
+  }
+}
+
+.campo-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 1px;
+}
+
+.campo-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.campo-ref {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 0 0 4px;
+}
+
+.campo-field {
+  width: 100%;
+
+  &.campo-field--full {
+    grid-column: 1 / -1;
+  }
+}
+
+.campo-valor-fijo {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  margin: 4px 0 0;
+}
+
+// ── Badges ────────────────────────────────────────────────────────────────────
+
+.badge-mod {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 99px;
+  background: #fed7aa;
+  color: #c2410c;
+}
+
+.badge-readonly {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 99px;
+  background: #f3f4f6;
+  color: #6b7280;
+}

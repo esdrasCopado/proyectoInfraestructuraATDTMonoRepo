@@ -1,0 +1,72 @@
+<!-- Contexto del servidor -->
+<div class="bloque">
+  <p class="bloque-titulo">{{ nombreServidor }}</p>
+  <p class="bloque-hint">{{ dependencia }}</p>
+  <table class="ref-tabla">
+    <tr><td class="ref-key">IP asignada</td> <td class="ref-val">{{ ip }}</td></tr>
+    <tr><td class="ref-key">Subdominios</td> <td class="ref-val">{{ subdominios }}</td></tr>
+  </table>
+  @if (iteracion > 1) {
+    <p class="iteracion-badge">Análisis #{{ iteracion }} · Carga de solventación</p>
+  }
+</div>
+
+<!-- Evidencias cargadas -->
+<div class="bloque">
+  <p class="bloque-titulo">Evidencias de pruebas y solventación</p>
+
+  @if (evidencias.length === 0) {
+    <p class="sin-evidencias">Sin evidencias de pruebas registradas para esta solicitud.</p>
+  } @else {
+    <ul class="archivos-lista">
+      @for (f of evidencias; track f.id) {
+        <li class="archivo-item">
+          <div class="archivo-info">
+            <span class="archivo-nombre">{{ getDisplayName(f.archivoNombre) }}</span>
+            <span class="archivo-meta">
+              {{ f.subidoPor.nombreCompleto }} · {{ f.uploadedAt | date:'dd/MM/yy HH:mm' }} · {{ formatSize(f.archivoSizeKb) }}
+            </span>
+          </div>
+          <button class="btn-descargar"
+                  [disabled]="viendo.has(f.id)"
+                  (click)="verPdf(f)"
+                  title="Ver PDF">
+            <span class="material-icons">{{ viendo.has(f.id) ? 'hourglass_empty' : 'visibility' }}</span>
+          </button>
+          <button class="btn-descargar"
+                  [disabled]="descargando.has(f.id)"
+                  (click)="descargar(f)"
+                  title="Descargar">
+            <span class="material-icons">{{ descargando.has(f.id) ? 'hourglass_empty' : 'download' }}</span>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>
+
+<!-- Formulario de rechazo -->
+@if (modoRechazo) {
+  <div class="bloque bloque-rechazo">
+    <p class="rechazo-titulo">Hallazgos de vulnerabilidades — Solventación requerida</p>
+    <p class="rechazo-desc">
+      Describe los hallazgos encontrados y qué debe remediar la dependencia antes del siguiente análisis.
+    </p>
+    <form [formGroup]="formRechazo">
+      <textarea class="rechazo-input"
+                [class.rechazo-input--error]="formRechazo.get('hallazgos')?.invalid && formRechazo.get('hallazgos')?.touched"
+                formControlName="hallazgos"
+                rows="4"
+                placeholder="Ej: CVE-2024-XXXX — Inyección SQL en módulo de búsqueda (severidad ALTA). CVE-2024-YYYY — XSS reflejado en parámetro q (severidad MEDIA). Requiere aplicar parches y evidenciar remediación.">
+      </textarea>
+      @if (formRechazo.get('hallazgos')?.errors?.['required'] && formRechazo.get('hallazgos')?.touched) {
+        <p class="rechazo-error">Describe los hallazgos encontrados.</p>
+      } @else if (formRechazo.get('hallazgos')?.errors?.['minlength'] && formRechazo.get('hallazgos')?.touched) {
+        <p class="rechazo-error">Describe los hallazgos con más detalle (mín. 10 caracteres).</p>
+      }
+    </form>
+    <button type="button" class="btn-cancelar-rechazo" (click)="cancelarRechazo()">
+      Cancelar
+    </button>
+  </div>
+}
